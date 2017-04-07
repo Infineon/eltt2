@@ -227,60 +227,53 @@ In order to execute ELTT2, you need to compile it first:
  ./eltt2 -z 17
 
 
-2.2 Examples:
+## 2.2 Examples:
 
-    In order to work with the TPM, perform the following steps:
-    - Send the TPM2_Startup command: ./eltt2 -u
-
-
-
-3. If you have questions
-
-    If you have any questions or problems, please read the section "FAQ and
-    Troubleshooting" in this document.
-    In case you still have questions, contact your local Infineon
-    Representative.
-    Further information is available at http://www.infineon.com/tpm.
+In order to work with the TPM, perform the following steps:
+- Send the TPM2_Startup command: ./eltt2 -u
 
 
 
-4. Release Info
+# 3. If you have questions
 
-    This is version 1.0. This version is a general release.
+If you have any questions or problems, please read the section "FAQ and
+Troubleshooting" in this document.
+In case you still have questions, contact your local Infineon
+Representative.
+Further information is available at http://www.infineon.com/tpm.
 
 
+# 4. FAQ and Troubleshooting
 
-5. FAQ and Troubleshooting
+If you encounter any error, please make sure that
+- the TPM is properly connected.
+- the TPM driver is loaded, i.e. check that "/dev/tpm0" exists. In case of
+  driver loading problems (e.g. shown by "Error opening device"), reboot
+  your system and try to load the driver again.
+- ELTT2 has been started with root permissions. Please note that ELTT2 needs
+  root permissions for all commands.
+- the TPM is started. (See section 2.2 in this document on how to do this.)
+- Trousers do not run anymore. In some cases the Kernel starts Trousers by
+  booting.
+  Shut down Trousers by entering the following command:
+  sudo pkill tcsd
 
-    If you encounter any error, please make sure that
-    - the TPM is properly connected.
-    - the TPM driver is loaded, i.e. check that "/dev/tpm0" exists. In case of
-      driver loading problems (e.g. shown by "Error opening device"), reboot
-      your system and try to load the driver again.
-    - ELTT2 has been started with root permissions. Please note that ELTT2 needs
-      root permissions for all commands.
-    - the TPM is started. (See section 2.2 in this document on how to do this.)
-    - Trousers do not run anymore. In some cases the Kernel starts Trousers by
-      booting.
-      Shut down Trousers by entering the following command:
-      sudo pkill tcsd
+The following list shows the most common errors and their solution:
 
-    The following list shows the most common errors and their solution:
+The ELTT2 response is "Error opening the device.":
+- You need to load a TPM driver before you can work with ELTT2.
+- You need to start ELTT2 with root permissions.
 
-    The ELTT2 response is "Error opening the device.":
-    - You need to load a TPM driver before you can work with ELTT2.
-    - You need to start ELTT2 with root permissions.
+The ELTT2 responds with error code 0x100.
+- You need to send the TPM2_Startup command, or you did send it twice. In
+  case you have not sent it yet, do so with "./eltt2 -u".
 
-    The ELTT2 responds with error code 0x100.
-    - You need to send the TPM2_Startup command, or you did send it twice. In
-      case you have not sent it yet, do so with "./eltt2 -u".
+The TPM does not change any of the permanent flags shown by sending the "-g"
+command , e.g. after a force clear.
+- The TPM requires a reset in order to change any of the permanent flags.
+  Press the reset button or disconnect the TPM to do so.
 
-    The TPM does not change any of the permanent flags shown by sending the "-g"
-    command , e.g. after a force clear.
-    - The TPM requires a reset in order to change any of the permanent flags.
-      Press the reset button or disconnect the TPM to do so.
-
-    The value of a PCR does not change after sending PCR extend or reset.
-    - With the application permissions you cannot modify every PCR. For more
-      details, please refer to the description for the different PCR commands
+The value of a PCR does not change after sending PCR extend or reset.
+- With the application permissions you cannot modify every PCR. For more
+  details, please refer to the description for the different PCR commands
 in this file.
