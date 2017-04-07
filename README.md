@@ -5,14 +5,14 @@ All information in this document is Copyright (c) 2014, Infineon Technologies AG
 All rights reserved.
 
 
-1. Welcome
+1. #Welcome
 
 Welcome to Embedded Linux TPM Toolbox 2 (ELTT2).
 ELTT2 is a single-file executable program intended for testing, performing
 diagnosis and basic state changes of the Infineon Technologies TPM 2.0.
 
 
-1.1 Prerequisites
+1.1 ##Prerequisites
 
 To build and run ELTT2 you need GCC and a Linux system capable of hosting a
 TPM.
