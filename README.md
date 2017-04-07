@@ -1,35 +1,32 @@
-# eltt2
- Infineon Embedded Linux TPM Toolbox 2 (ELTT2) for TPM 2.0
+# eltt2 - Infineon Embedded Linux TPM Toolbox 2 (ELTT2) for TPM 2.0
  
 
 All information in this document is Copyright (c) 2014, Infineon Technologies AG
 All rights reserved.
 
 
-
-
 1. Welcome
 
-    Welcome to Embedded Linux TPM Toolbox 2 (ELTT2).
-    ELTT2 is a single-file executable program intended for testing, performing
-    diagnosis and basic state changes of the Infineon Technologies TPM 2.0.
+Welcome to Embedded Linux TPM Toolbox 2 (ELTT2).
+ELTT2 is a single-file executable program intended for testing, performing
+diagnosis and basic state changes of the Infineon Technologies TPM 2.0.
 
 
 1.1 Prerequisites
 
-    To build and run ELTT2 you need GCC and a Linux system capable of hosting a
-    TPM.
+To build and run ELTT2 you need GCC and a Linux system capable of hosting a
+TPM.
 
-    Tested PC platforms
-      - Ubuntu (R) Linux 12.04 LTS - 64 bit (Kernel 3.8.0)
-        with Infineon TPM 2.0 SLB9665 Firmware 5.22
+Tested PC platforms
+  - Ubuntu (R) Linux 12.04 LTS - 64 bit (Kernel 3.8.0)
+    with Infineon TPM 2.0 SLB9665 Firmware 5.22
 
 
-    ELTT2 may run on many other little-endian hardware and software
-    configurations capable of running Linux and hosting a TPM, but this has not
-    been tested.
+ELTT2 may run on many other little-endian hardware and software
+configurations capable of running Linux and hosting a TPM, but this has not
+been tested.
 
-    ELTT2 does not support machines with a big-endian CPU.
+ELTT2 does not support machines with a big-endian CPU.
 
 
 1.2 Contents of Package
