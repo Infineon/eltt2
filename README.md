@@ -47,28 +47,6 @@ Call: ./eltt2 \<option(s)\>
 
 For example: ./eltt2 -g or ./eltt2 -gc
 
-<table dir="ltr" border="1">
-	<thead>
-		<tr>
-			<th scope="col">Name</th>
-			<th scope="col">Side</th>
-			<th scope="col">Role</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>Obi Wan Kenobi</td>
-			<td>Light</td>
-			<td>Jedi</td>
-		</tr>
-		<tr>
-			<td>Greedo</td>
-			<td>South</td>
-			<td>Scumbag</td>
-		</tr>
-	</tbody>
-</table>
-
 For getting an overview of the possible commands, run ./eltt2 -h
 
 Some options require the TPM to be in a specific state. This state is shown in brackets ("[]") behind each command line option in the list below:
@@ -78,39 +56,32 @@ Some options require the TPM to be in a specific state. This state is shown in b
 To get the TPM into the required state, call ELTT2 with the corresponding commands ("x" for a state means that whether this state is required or not depends on the actual command or the command parameters sent eventually to the TPM).
 
 
- Command line option  | Explanation                    | Precondition
- ---                  | ---                            | ---
- -a \<data bytes\>    | Hash Sequence SHA-1            | \[u\] 
- -A \<data bytes\>    | Hash Sequence SHA-256          | \[u\] 
- -b \<command bytes\> | Enter your own TPM command     | \[u\] 
- -c                   | Read Clock                     | \[u\] 
-
-# abc
-
- -d \<shutdown type\>            | Shutdown            | \[u\]
- -e \<PCR index\> \<PCR digest\> | PCR Extend SHA-1    | \[u\]
- -E \<PCR index\> \<PCR digest\> | PCR Extend SHA-256  | \[u\]
- -g                              | Get Capability 'TPM Properties'             | \[u\]
- -G \<data length\>              | Get Random          | \[u\]
- -h: Help                                        | \[-\]
- -r <PCR index>: PCR Read SHA-1                  | \[u\]
- -R <PCR index>: PCR Read SHA-256                | \[u\]
- -s <data bytes>: Hash SHA-1                     | \[u\]
- -S <data bytes>: Hash SHA-256                   | \[u\]
- -t <test type>: Self Test                       | \[u\]
- -T: Get Test Result                             | \[u\]
- -u <startup type>: Startup                      | \[-\]
- -z <PCR index>: PCR Reset                       | \[u\]
+ Command line option             | Explanation                    | Precondition
+ ---                             | ---                            | ---
+ -a \<data bytes\>               | Hash Sequence SHA-1            | \[u\] 
+ -A \<data bytes\>               | Hash Sequence SHA-256          | \[u\] 
+ -b \<command bytes\>            | Enter your own TPM command     | \[u\] 
+ -c                              | Read Clock                     | \[u\] 
+ -d \<shutdown type\>            | Shutdown                       | \[u\]
+ -e \<PCR index\> \<PCR digest\> | PCR Extend SHA-1               | \[u\]
+ -E \<PCR index\> \<PCR digest\> | PCR Extend SHA-256             | \[u\]
+ -g                              | Get Capability 'TPM Properties'| \[u\]
+ -G \<data length\>              | Get Random                     | \[u\]
+ -h                              | Help                           | \[-\]
+ -r \<PCR index\>                | PCR Read SHA-1                 | \[u\]
+ -R \<PCR index\>                | PCR Read SHA-256               | \[u\]
+ -s \<data bytes\>               | Hash SHA-1                     | \[u\]
+ -S \<data bytes\>               | Hash SHA-256                   | \[u\]
+ -t \<test type\>                | Self Test                      | \[u\]
+ -T                              | Get Test Result                | \[u\]
+ -u \<startup type\>             | Startup                        | \[-\]
+ -z \<PCR index\>                | PCR Reset                      | \[u\]
 
 
  Additional information:
 
- -a:
- With the "-a" command you can hash given data with the SHA-1 hash algorithm.
- This hash sequence sends 3 commands [start, update, complete] to the TPM and
- allows to hash an arbitrary amount of data.
- For example, use the following command to hash the byte sequence {0x41,
- 0x62, 0x43, 0x64}:
+\-a:
+With the "-a" command you can hash given data with the SHA-1 hash algorithm. This hash sequence sends 3 commands [start, update, complete] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}:
  ./eltt2 -a 41624364
 
  -A:
