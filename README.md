@@ -68,40 +68,23 @@ In order to execute ELTT2, you need to compile it first:
  Command line options: | Preconditions:
  ------------ | -------------
  -a <data bytes>: Hash Sequence SHA-1            | \[u\]
-
- -A <data bytes>: Hash Sequence SHA-256          | [u]
-
- -b <command bytes>: Enter your own TPM command  [u]
-
- -c: Read Clock                                  [u]
-
- -d <shutdown type>: Shutdown                    [u]
-
- -e: PCR Extend SHA-1 <PCR index> <PCR digest>   [u]
-
- -E: PCR Extend SHA-256 <PCR index> <PCR digest> [u]
-
- -g: Get Capability 'TPM Properties'             [u]
-
- -G <data length>: Get Random                    [u]
-
- -h: Help                                        [-]
-
- -r <PCR index>: PCR Read SHA-1                  [u]
-
- -R <PCR index>: PCR Read SHA-256                [u]
-
- -s <data bytes>: Hash SHA-1                     [u]
-
- -S <data bytes>: Hash SHA-256                   [u]
-
- -t <test type>: Self Test                       [u]
-
- -T: Get Test Result                             [u]
-
- -u <startup type>: Startup                      [-]
-
- -z <PCR index>: PCR Reset                       [u]
+ -A <data bytes>: Hash Sequence SHA-256          | \[u\]
+ -b <command bytes>: Enter your own TPM command  | \[u\]
+ -c: Read Clock                                  | \[u\]
+ -d <shutdown type>: Shutdown                    | \[u\]
+ -e: PCR Extend SHA-1 <PCR index> <PCR digest>   | \[u\]
+ -E: PCR Extend SHA-256 <PCR index> <PCR digest> | \[u\]
+ -g: Get Capability 'TPM Properties'             | \[u\]
+ -G <data length>: Get Random                    | \[u\]
+ -h: Help                                        | \[-\]
+ -r <PCR index>: PCR Read SHA-1                  | \[u\]
+ -R <PCR index>: PCR Read SHA-256                | \[u\]
+ -s <data bytes>: Hash SHA-1                     | \[u\]
+ -S <data bytes>: Hash SHA-256                   | \[u\]
+ -t <test type>: Self Test                       | \[u\]
+ -T: Get Test Result                             | \[u\]
+ -u <startup type>: Startup                      | \[-\]
+ -z <PCR index>: PCR Reset                       | \[u\]
 
 
  Additional information:
