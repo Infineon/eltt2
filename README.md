@@ -62,9 +62,9 @@ To get the TPM into the required state, call ELTT2 with the corresponding comman
  -A \<data bytes\>: Hash Sequence SHA-256          | \[u\] |
  -b \<command bytes\>: Enter your own TPM command  | \[u\]
  -c: Read Clock                                  | \[u\]
- -d <shutdown type>: Shutdown                    | \[u\]
- -e: PCR Extend SHA-1 <PCR index> <PCR digest>   | \[u\]
- -E: PCR Extend SHA-256 <PCR index> <PCR digest> | \[u\]
+ -d \<shutdown type\>: Shutdown                    | \[u\]
+ -e: PCR Extend SHA-1 \<PCR index\> \<PCR digest\>   | \[u\]
+ -E: PCR Extend SHA-256 \<PCR index\> \<PCR digest\> | \[u\]
  -g: Get Capability 'TPM Properties'             | \[u\]
  -G <data length>: Get Random                    | \[u\]
  -h: Help                                        | \[-\]
