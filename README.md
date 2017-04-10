@@ -96,7 +96,7 @@ With the "-a" command you can hash given data with the SHA-1 hash algorithm. Thi
  With the "-b" command you can enter your own TPM command bytes and read the
  TPM response.
  For example, use the following command to send a TPM2_Startup with startup
- type CLEAR to the TPM:
+ type CLEAR to the TPM: <br>
  ./eltt2 -b 80010000000C000001440000
 
  -c:
@@ -112,42 +112,23 @@ With the "-a" command you can hash given data with the SHA-1 hash algorithm. Thi
                      the TPM.
 
  -e:
- With the "-e" command you can extend bytes in the selected PCR with SHA-1.
- To do so, you have to enter the index of PCR in hexadecimal that you like to
- extend and the digest you want to extend the selected PCR with. Note that
- you can only extend PCRs with index 0 to 16 and PCR 23 and that the digest
- must have a length of 20 bytes (will be padded with 0 if necessary).
- The TPM then builds an SHA-1 hash over the PCR data in the selected PCR and
- the digest you provided and writes the result back to the selected PCR.
- For example, use the following command to extend PCR 23 (0x17) with the byte
- sequence {0x41, 0x62, 0x43, 0x64, 0x00, ... (will be filled with 0x00)}:
+ With the "-e" command you can extend bytes in the selected PCR with SHA-1. To do so, you have to enter the index of PCR in hexadecimal that you like to extend and the digest you want to extend the selected PCR with. Note that you can only extend PCRs with index 0 to 16 and PCR 23 and that the digest must have a length of 20 bytes (will be padded with 0 if necessary). The TPM then builds an SHA-1 hash over the PCR data in the selected PCR and the digest you provided and writes the result back to the selected PCR. For example, use the following command to extend PCR 23 (0x17) with the byte sequence {0x41, 0x62, 0x43, 0x64, 0x00, ... (will be filled with 0x00)}: <br>
  ./eltt2 -e 17 41624364
 
- -E:
- With the "-E" command you can extend bytes in the selected PCR with SHA-256.
- To do so, you have to enter the index of PCR in hexadecimal that you like to
- extend and the digest you want to extend the selected PCR with. Note that
- you can only extend PCRs with index 0 to 16 and PCR 23 and that the digest
- must have a length of 32 bytes (will be padded with 0 if necessary).
- The TPM then builds an SHA-256 hash over the PCR data in the selected PCR
- and the digest you provided and writes the result back to the selected PCR.
- For example, use the following command to extend PCR 23 (0x17) with the byte
- sequence {0x41, 0x62, 0x43, 0x64, 0x00, ... (will be filled with 0x00)}:
+-E:
+With the "-E" command you can extend bytes in the selected PCR with SHA-256. To do so, you have to enter the index of PCR in hexadecimal that you like to extend and the digest you want to extend the selected PCR with. Note that you can only extend PCRs with index 0 to 16 and PCR 23 and that the digest must have a length of 32 bytes (will be padded with 0 if necessary). The TPM then builds an SHA-256 hash over the PCR data in the selected PCR and the digest you provided and writes the result back to the selected PCR. For example, use the following command to extend PCR 23 (0x17) with the byte sequence {0x41, 0x62, 0x43, 0x64, 0x00, ... (will be filled with 0x00)}: <br>
  ./eltt2 -E 17 41624364
 
- -g:
- With the "-g" command you can read the TPM's properties.
+-g:
+With the "-g" command you can read the TPM's properties.
 
- -G:
- With the "-G" command you can get a given amount of random bytes. Note that
- you can only request a maximum amount of 32 random bytes at once.
- For example, use the following command to get 20 (0x14) random bytes:
+-G:
+With the "-G" command you can get a given amount of random bytes. Note that you can only request a maximum amount of 32 random bytes at once. For example, use the following command to get 20 (0x14) random bytes: <br>
  ./eltt2 -G 14
 
- -r:
- With the "-r" command you can read data from a selected SHA-1 PCR.
- For example, use the following command to read data from PCR 23 (0x17):
- ./eltt2 -r 17
+-r:
+With the "-r" command you can read data from a selected SHA-1 PCR. For example, use the following command to read data from PCR 23 (0x17): <br>
+./eltt2 -r 17
 
  -R:
  With the "-R" command you can read data from a selected SHA-256 PCR.
