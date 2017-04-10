@@ -81,7 +81,7 @@ To get the TPM into the required state, call ELTT2 with the corresponding comman
  Additional information:
 
 \-a:
-With the "-a" command you can hash given data with the SHA-1 hash algorithm. This hash sequence sends 3 commands [start, update, complete] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}:
+With the "-a" command you can hash given data with the SHA-1 hash algorithm. This hash sequence sends 3 commands [start, update, complete] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
  ./eltt2 -a 41624364
 
  -A:
@@ -89,7 +89,7 @@ With the "-a" command you can hash given data with the SHA-1 hash algorithm. Thi
  algorithm. This hash sequence sends 3 commands [start, update, complete] to
  the TPM and allows to hash an arbitrary amount of data.
  For example, use the following command to hash the byte sequence {0x41,
- 0x62, 0x43, 0x64}:
+ 0x62, 0x43, 0x64}: <br>
  ./eltt2 -A 41624364
 
  -b:
