@@ -67,9 +67,9 @@ In order to execute ELTT2, you need to compile it first:
 
  Command line options:                           Preconditions:
 
- -a <data bytes>: Hash Sequence SHA-1            [u]
+ -a <data bytes>: Hash Sequence SHA-1            | \[u\]
 
- -A <data bytes>: Hash Sequence SHA-256          [u]
+ -A <data bytes>: Hash Sequence SHA-256          | [u]
 
  -b <command bytes>: Enter your own TPM command  [u]
 
