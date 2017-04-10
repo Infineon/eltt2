@@ -57,7 +57,7 @@ To get the TPM into the required state, call ELTT2 with the corresponding comman
 
 
  Command line option: | Explanation: | Precondition:
- ------------ | -------------
+ ------------ | ------------- | -------------
  -a \<data bytes\> | Hash Sequence SHA-1            | \[u\] |
  -A \<data bytes\> | Hash Sequence SHA-256          | \[u\] |
  -b \<command bytes\> | Enter your own TPM command  | \[u\]
