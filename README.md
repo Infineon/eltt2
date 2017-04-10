@@ -47,6 +47,43 @@ Call: ./eltt2 \<option(s)\>
 
 For example: ./eltt2 -g or ./eltt2 -gc
 
+<table dir="ltr" width="500" border="1" 
+			summary="purpose/structure for speech output">
+	<caption>Here we assign header information to cells 
+			by setting the scope attribute.
+	</caption>
+	<colgroup width="50%" />
+	<colgroup id="colgroup" class="colgroup" align="center" 
+			valign="middle" title="title" width="1*" 
+			span="2" style="background:#ddd;" />
+	<thead>
+		<tr>
+			<th scope="col">Name</th>
+			<th scope="col">Side</th>
+			<th scope="col">Role</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td>Darth Vader</td>
+			<td>Dark</td>
+			<td>Sith</td>
+		</tr>
+	</tfoot>
+	<tbody>
+		<tr>
+			<td>Obi Wan Kenobi</td>
+			<td>Light</td>
+			<td>Jedi</td>
+		</tr>
+		<tr>
+			<td>Greedo</td>
+			<td>South</td>
+			<td>Scumbag</td>
+		</tr>
+	</tbody>
+</table>
+
 For getting an overview of the possible commands, run ./eltt2 -h
 
 Some options require the TPM to be in a specific state. This state is shown in brackets ("[]") behind each command line option in the list below:
@@ -56,12 +93,12 @@ Some options require the TPM to be in a specific state. This state is shown in b
 To get the TPM into the required state, call ELTT2 with the corresponding commands ("x" for a state means that whether this state is required or not depends on the actual command or the command parameters sent eventually to the TPM).
 
 
-| Command line option  | Explanation                    | Precondition
-| ---                  | ---                            | ---
-| -a \<data bytes\>    | Hash Sequence SHA-1            | \[u\] 
-| -A \<data bytes\>    | Hash Sequence SHA-256          | \[u\] 
-| -b \<command bytes\> | Enter your own TPM command     | \[u\] 
-| -c                   | Read Clock                     | \[u\] 
+ Command line option  | Explanation                    | Precondition
+ ---                  | ---                            | ---
+ -a \<data bytes\>    | Hash Sequence SHA-1            | \[u\] 
+ -A \<data bytes\>    | Hash Sequence SHA-256          | \[u\] 
+ -b \<command bytes\> | Enter your own TPM command     | \[u\] 
+ -c                   | Read Clock                     | \[u\] 
 
 # abc
 
