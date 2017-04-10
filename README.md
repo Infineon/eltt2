@@ -1,7 +1,7 @@
 # ELTT2 - Infineon Embedded Linux TPM Toolbox 2 for TPM 2.0
  
 
-All information in this document is Copyright (c) 2014-2017, Infineon Technologies AG
+All information in this document is Copyright (c) 2014-2017, Infineon Technologies AG <br>
 All rights reserved.
 
 
