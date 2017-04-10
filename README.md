@@ -7,25 +7,19 @@ All rights reserved.
 
 # 1. Welcome
 
-Welcome to Embedded Linux TPM Toolbox 2 (ELTT2).
-ELTT2 is a single-file executable program intended for testing, performing
-diagnosis and basic state changes of the Infineon Technologies TPM 2.0.
+Welcome to Embedded Linux TPM Toolbox 2 (ELTT2). ELTT2 is a single-file executable program intended for testing, performing diagnosis and basic state changes of the Infineon Technologies TPM 2.0.
 
 
 ## 1.1 Prerequisites
 
-To build and run ELTT2 you need GCC and a Linux system capable of hosting a
-TPM.
+To build and run ELTT2 you need GCC and a Linux system capable of hosting a TPM.
 
 Tested PC platforms
   - Ubuntu (R) Linux 12.04 LTS - 64 bit (Kernel 3.8.0) with Infineon TPM 2.0 SLB9665 Firmware 5.22
 
-ELTT2 may run on many other little-endian hardware and software
-configurations capable of running Linux and hosting a TPM, but this has not
-been tested.
+ELTT2 may run on many other little-endian hardware and software configurations capable of running Linux and hosting a TPM, but this has not been tested.
 
 ELTT2 does not support machines with a big-endian CPU.
-
 
 ## 1.2 Getting Started
 
@@ -54,7 +48,6 @@ Some options require the TPM to be in a specific state. This state is shown in b
 \[u\]: started
 
 To get the TPM into the required state, call ELTT2 with the corresponding commands ("x" for a state means that whether this state is required or not depends on the actual command or the command parameters sent eventually to the TPM).
-
 
  Command line option             | Explanation                    | Precondition
  ---                             | ---                            | ---
@@ -96,86 +89,69 @@ With the "-b" command you can enter your own TPM command bytes and read the TPM 
 With the "-c" command you can read the clock values of the TPM. 
 
 -d: <br>
-With the "-d" command you can issue a TPM shutdown. It has 2 options:
- ./eltt2 -d
- or
- ./eltt2 -d clear    send a TPM2_Shutdown command with shutdown type CLEAR to
-                     the TPM.
- ./eltt2 -d state    send a TPM2_Shutdown command with shutdown type STATE to
-                     the TPM.
+With the "-d" command you can issue a TPM shutdown. It has 2 options: <br>
+./eltt2 -d <br>
+or <br>
+./eltt2 -d clear    send a TPM2_Shutdown command with shutdown type CLEAR to the TPM. <br>
+./eltt2 -d state    send a TPM2_Shutdown command with shutdown type STATE to the TPM. <br>
 
- -e:
+ -e: <br>
  With the "-e" command you can extend bytes in the selected PCR with SHA-1. To do so, you have to enter the index of PCR in hexadecimal that you like to extend and the digest you want to extend the selected PCR with. Note that you can only extend PCRs with index 0 to 16 and PCR 23 and that the digest must have a length of 20 bytes (will be padded with 0 if necessary). The TPM then builds an SHA-1 hash over the PCR data in the selected PCR and the digest you provided and writes the result back to the selected PCR. For example, use the following command to extend PCR 23 (0x17) with the byte sequence {0x41, 0x62, 0x43, 0x64, 0x00, ... (will be filled with 0x00)}: <br>
  ./eltt2 -e 17 41624364
 
--E:
+-E: <br>
 With the "-E" command you can extend bytes in the selected PCR with SHA-256. To do so, you have to enter the index of PCR in hexadecimal that you like to extend and the digest you want to extend the selected PCR with. Note that you can only extend PCRs with index 0 to 16 and PCR 23 and that the digest must have a length of 32 bytes (will be padded with 0 if necessary). The TPM then builds an SHA-256 hash over the PCR data in the selected PCR and the digest you provided and writes the result back to the selected PCR. For example, use the following command to extend PCR 23 (0x17) with the byte sequence {0x41, 0x62, 0x43, 0x64, 0x00, ... (will be filled with 0x00)}: <br>
  ./eltt2 -E 17 41624364
 
--g:
+-g: <br>
 With the "-g" command you can read the TPM's properties.
 
--G:
+-G: <br>
 With the "-G" command you can get a given amount of random bytes. Note that you can only request a maximum amount of 32 random bytes at once. For example, use the following command to get 20 (0x14) random bytes: <br>
  ./eltt2 -G 14
 
--r:
+-r: <br>
 With the "-r" command you can read data from a selected SHA-1 PCR. For example, use the following command to read data from PCR 23 (0x17): <br>
 ./eltt2 -r 17
 
- -R:
- With the "-R" command you can read data from a selected SHA-256 PCR.
- For example, use the following command to read data from PCR 23 (0x17):
+-R: <br>
+With the "-R" command you can read data from a selected SHA-256 PCR. For example, use the following command to read data from PCR 23 (0x17): <br>
  ./eltt2 -R 17
 
- -s:
- With the "-s" command you can hash given data with the SHA-1 hash algorithm.
- This command only allows a limited amount of data to be hashed (depending on
- the TPM's maximum input buffer size).
- For example, use the following command to hash the byte sequence {0x41,
- 0x62, 0x43, 0x64}:
+-s: <br>
+With the "-s" command you can hash given data with the SHA-1 hash algorithm. This command only allows a limited amount of data to be hashed (depending on the TPM's maximum input buffer size). For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
  ./eltt2 -s 41624364
 
- -S:
- With the "-S" command you can hash given data with the SHA-256 hash
- algorithm. This command only allows a limited amount of data to be hashed
- (depending on the TPM input buffer size).
- For example, use the following command to hash the byte sequence {0x41,
- 0x62, 0x43, 0x64}:
+-S: <br>
+With the "-S" command you can hash given data with the SHA-256 hash algorithm. This command only allows a limited amount of data to be hashed (depending on the TPM input buffer size). For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
  ./eltt2 -S 41624364
 
- -t:
- With the "-t" command you can issue a TPM selftest. It has 3 options:
- ./eltt2 -t
- or
- ./eltt2 -t not_full     Perform a partial TPM2_Selftest to test previously
-                         untested TPM capabilities.
- ./eltt2 -t full         Perform a full TPM2_Selftest to test all TPM
-                         capabilities.
- ./eltt2 -t incremental  Perform a test of selected algorithms.
+-t: <b>
+With the "-t" command you can issue a TPM selftest. It has 3 options: <br>
+./eltt2 -t <br>
+or
+./eltt2 -t not_full Perform a partial TPM2_Selftest to test previously untested TPM capabilities. <br>
+./eltt2 -t full Perform a full TPM2_Selftest to test all TPM capabilities. <br>
+./eltt2 -t incremental  Perform a test of selected algorithms. 
 
- -T:
- With the "-T" command you can read the results of a previously run selftest.
+-T: <br>
+With the "-T" command you can read the results of a previously run selftest.
 
- -u:
- With the "-u" command you can issue a TPM startup command. It has 2 options:
- ./eltt2 -u
- or
- ./eltt2 -u clear    send a TPM2_Startup with startup type CLEAR to the TPM.
- ./eltt2 -u state    send a TPM2_Startup with startup type STATE to the TPM.
+-u: <br>
+With the "-u" command you can issue a TPM startup command. It has 2 options: <br>
+./eltt2 -u <br>
+or <br>
+./eltt2 -u clear send a TPM2_Startup with startup type CLEAR to the TPM. <br>
+./eltt2 -u state send a TPM2_Startup with startup type STATE to the TPM.
 
- -z:
- With the "-z" command you can reset a selected PCR. Note that you can only
- reset PCRs 16 and 23.
- For example, use the following command to reset PCR 23 (0x17):
+-z: <br>
+With the "-z" command you can reset a selected PCR. Note that you can only reset PCRs 16 and 23. For example, use the following command to reset PCR 23 (0x17): <br>
  ./eltt2 -z 17
-
 
 ## 2.2 Examples:
 
 In order to work with the TPM, perform the following steps:
 - Send the TPM2_Startup command: ./eltt2 -u
-
 
 
 # 3. If you have questions
@@ -191,16 +167,10 @@ Further information is available at http://www.infineon.com/tpm.
 
 If you encounter any error, please make sure that
 - the TPM is properly connected.
-- the TPM driver is loaded, i.e. check that "/dev/tpm0" exists. In case of
-  driver loading problems (e.g. shown by "Error opening device"), reboot
-  your system and try to load the driver again.
-- ELTT2 has been started with root permissions. Please note that ELTT2 needs
-  root permissions for all commands.
+- the TPM driver is loaded, i.e. check that "/dev/tpm0" exists. In case of driver loading problems (e.g. shown by "Error opening device"), reboot your system and try to load the driver again.
+- ELTT2 has been started with root permissions. Please note that ELTT2 needs root permissions for all commands.
 - the TPM is started. (See section 2.2 in this document on how to do this.)
-- Trousers do not run anymore. In some cases the Kernel starts Trousers by
-  booting.
-  Shut down Trousers by entering the following command:
-  sudo pkill tcsd
+
 
 The following list shows the most common errors and their solution:
 
