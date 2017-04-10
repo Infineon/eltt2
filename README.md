@@ -123,7 +123,7 @@ With the "-s" command you can hash given data with the SHA-1 hash algorithm. Thi
 With the "-S" command you can hash given data with the SHA-256 hash algorithm. This command only allows a limited amount of data to be hashed (depending on the TPM input buffer size). For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
  ./eltt2 -S 41624364
 
--t: <b>
+-t: <br>
 With the "-t" command you can issue a TPM selftest. It has 3 options: <br>
 ./eltt2 -t <br>
 or
