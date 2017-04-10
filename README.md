@@ -47,15 +47,7 @@ Call: ./eltt2 \<option(s)\>
 
 For example: ./eltt2 -g or ./eltt2 -gc
 
-<table dir="ltr" width="500" border="1" 
-			summary="purpose/structure for speech output">
-	<caption>Here we assign header information to cells 
-			by setting the scope attribute.
-	</caption>
-	<colgroup width="50%" />
-	<colgroup id="colgroup" class="colgroup" align="center" 
-			valign="middle" title="title" width="1*" 
-			span="2" style="background:#ddd;" />
+<table dir="ltr" border="1">
 	<thead>
 		<tr>
 			<th scope="col">Name</th>
@@ -63,13 +55,6 @@ For example: ./eltt2 -g or ./eltt2 -gc
 			<th scope="col">Role</th>
 		</tr>
 	</thead>
-	<tfoot>
-		<tr>
-			<td>Darth Vader</td>
-			<td>Dark</td>
-			<td>Sith</td>
-		</tr>
-	</tfoot>
 	<tbody>
 		<tr>
 			<td>Obi Wan Kenobi</td>
