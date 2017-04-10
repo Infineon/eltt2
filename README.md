@@ -14,9 +14,6 @@ Welcome to Embedded Linux TPM Toolbox 2 (ELTT2). ELTT2 is a single-file executab
 
 To build and run ELTT2 you need GCC and a Linux system capable of hosting a TPM.
 
-Tested PC platforms
-  - Ubuntu (R) Linux 12.04 LTS - 64 bit (Kernel 3.8.0) with Infineon TPM 2.0 SLB9665 Firmware 5.22
-
 ELTT2 may run on many other little-endian hardware and software configurations capable of running Linux and hosting a TPM, but this has not been tested.
 
 ELTT2 does not support machines with a big-endian CPU.
