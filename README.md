@@ -56,12 +56,15 @@ Some options require the TPM to be in a specific state. This state is shown in b
 To get the TPM into the required state, call ELTT2 with the corresponding commands ("x" for a state means that whether this state is required or not depends on the actual command or the command parameters sent eventually to the TPM).
 
 
-| Command line option: | Explanation: | Precondition:
-| ------------         | ------------ | ------------- |
+| Command line option: | Explanation:                   | Precondition:
+| ------------         | ------------                   | ------------- |
 | -a \<data bytes\>    | Hash Sequence SHA-1            | \[u\] |
 | -A \<data bytes\>    | Hash Sequence SHA-256          | \[u\] |
 | -b \<command bytes\> | Enter your own TPM command     | \[u\] |
-| -c                   | Read Clock                     | \[u\]
+| -c                   | Read Clock                     | \[u\] |
+
+# abc
+
  -d \<shutdown type\>            | Shutdown            | \[u\]
  -e \<PCR index\> \<PCR digest\> | PCR Extend SHA-1    | \[u\]
  -E \<PCR index\> \<PCR digest\> | PCR Extend SHA-256  | \[u\]
