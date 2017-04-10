@@ -18,9 +18,7 @@ To build and run ELTT2 you need GCC and a Linux system capable of hosting a
 TPM.
 
 Tested PC platforms
-  - Ubuntu (R) Linux 12.04 LTS - 64 bit (Kernel 3.8.0)
-    with Infineon TPM 2.0 SLB9665 Firmware 5.22
-
+  - Ubuntu (R) Linux 12.04 LTS - 64 bit (Kernel 3.8.0) with Infineon TPM 2.0 SLB9665 Firmware 5.22
 
 ELTT2 may run on many other little-endian hardware and software
 configurations capable of running Linux and hosting a TPM, but this has not
@@ -36,33 +34,26 @@ In order to execute ELTT2, you need to compile it first:
  2. Compile the source code by typing the following command:
     make
 
-    Due to hardware (and thus TPM) access restrictions for normal users, ELTT2
-    requires root (aka superuser or administrator) privileges. They can be
-    obtained e.g. by using the 'sudo' command on Debian Linux derivates.
+Due to hardware (and thus TPM) access restrictions for normal users, ELTT2 requires root (aka superuser or administrator) privileges. They can be obtained e.g. by using the 'sudo' command on Debian Linux derivates.
 
 
 # 2. Usage of ELTT2
 
-
 ## 2.1 Generic Usage
 
- ELTT2 is operated as follows:
+ELTT2 is operated as follows:
 
- Call: ./eltt2 <option(s)>
+Call: ./eltt2 \<option(s)\>
 
- For example: ./eltt2 -g or ./eltt2 -gc
+For example: ./eltt2 -g or ./eltt2 -gc
 
- For getting an overview of the possible commands, run ./eltt2 -h
+For getting an overview of the possible commands, run ./eltt2 -h
 
- Some options require the TPM to be in a specific state. This state is shown
- in brackets ("[]") behind each command line option in the list below:
+Some options require the TPM to be in a specific state. This state is shown in brackets ("[]") behind each command line option in the list below:
 
- [u]: started
+\[u\]: started
 
- To get the TPM into the required state, call ELTT2 with the corresponding
- commands ("x" for a state means that whether this state is required or not
- depends on the actual command or the command parameters sent eventually to
- the TPM).
+To get the TPM into the required state, call ELTT2 with the corresponding commands ("x" for a state means that whether this state is required or not depends on the actual command or the command parameters sent eventually to the TPM).
 
 
  Command line options: | Preconditions:
