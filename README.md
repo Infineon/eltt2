@@ -80,30 +80,23 @@ To get the TPM into the required state, call ELTT2 with the corresponding comman
 
  Additional information:
 
-\-a:
+-a: <br>
 With the "-a" command you can hash given data with the SHA-1 hash algorithm. This hash sequence sends 3 commands [start, update, complete] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
  ./eltt2 -a 41624364
 
- -A:
- With the "-A" command you can hash given data with the SHA-256 hash
- algorithm. This hash sequence sends 3 commands [start, update, complete] to
- the TPM and allows to hash an arbitrary amount of data.
- For example, use the following command to hash the byte sequence {0x41,
- 0x62, 0x43, 0x64}: <br>
- ./eltt2 -A 41624364
+-A: <br>
+With the "-A" command you can hash given data with the SHA-256 hash algorithm. This hash sequence sends 3 commands [start, update, complete] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
+./eltt2 -A 41624364
 
- -b:
- With the "-b" command you can enter your own TPM command bytes and read the
- TPM response.
- For example, use the following command to send a TPM2_Startup with startup
- type CLEAR to the TPM: <br>
+-b: <br>
+With the "-b" command you can enter your own TPM command bytes and read the TPM response. For example, use the following command to send a TPM2_Startup with startup type CLEAR to the TPM: <br>
  ./eltt2 -b 80010000000C000001440000
 
- -c:
- With the "-c" command you can read the clock values of the TPM.
+-c: <br>
+With the "-c" command you can read the clock values of the TPM. 
 
- -d:
- With the "-d" command you can issue a TPM shutdown. It has 2 options:
+-d: <br>
+With the "-d" command you can issue a TPM shutdown. It has 2 options:
  ./eltt2 -d
  or
  ./eltt2 -d clear    send a TPM2_Shutdown command with shutdown type CLEAR to
