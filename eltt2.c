@@ -674,7 +674,8 @@ void print_help()
         printf("'-E <PCR index> <PCR digest>': PCR Extend SHA256\n");
         printf("        -> PCR index:  Enter the PCR index in hex like '17' for 0x17\n");
         printf("           PCR digest: Enter the value to extend the PCR with in hex like '0f56...' for {0x0f, 0x56, ...}\n");
-        printf("'-g': Get Capability\n");
+        printf("'-g': Get fixed capability values\n");
+        printf("'-v': Get variable capability values\n");
         printf("'-G <byte count>': Get Random\n");
         printf("        -> Enter desired number of random bytes in hex like '32' for 0x32\n");
         printf("'-h': Help\n");
