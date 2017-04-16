@@ -777,17 +777,6 @@ int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
                                                 }
 
 
-                                        printf("\nTPM_PT_PS_LEVEL:\n");
-                                        printf("=========================================================\n");
-
-                                        ret_val = buf_to_uint64(response_buf, 471, 2, &propertyValue);
-                                        RET_VAL_CHECK(ret_val);
-
-                                        i = 1; // bit 0
-                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 0 value.
-                                        printf("PCR0:                     %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-
                                         printf("\nTPM_PT_MEMORY:\n");
                                         printf("=========================================================\n");
 
@@ -809,7 +798,7 @@ int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 
                                         printf("\nTPM_PT_PERMANENT:\n");
                                         printf("=========================================================\n");
-                                        ret_val = buf_to_uint64(response_buf, 513, 4, &propertyValue);
+                                        ret_val = buf_to_uint64(response_buf, 367, 4, &propertyValue);
                                         RET_VAL_CHECK(ret_val);
 
                                         i = 1; // bit 0
@@ -843,30 +832,6 @@ int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
                                         tmp = ((propertyValue & i) == 0? 0:1); // Check bit 10 value.
                                         printf("TPM Generated EPS:              %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
                                         //bit 31:11 = reserved
-
-                                        printf("\nTPM_PT_STARTUP_CLEAR:\n");
-                                        printf("=========================================================\n");
-                                        ret_val = buf_to_uint64(response_buf, 375, 4, &propertyValue);
-                                        RET_VAL_CHECK(ret_val);
-
-                                        i = 1; // bit 0
-                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 0 value.
-                                        printf("Ph Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-                                        i = i + i; // bit 1
-                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 1 value.
-                                        printf("Sh Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-                                        i = i * 2; // bit 2
-                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 2 value.
-                                        printf("Eh Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-                                        //bit 30:3 = reserved
-                                        for(j = 2; j < 31; j++) // go to bit 31.
-                                                {
-                                                        i = i * 2;
-                                                }
-                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 31 value.
-                                        printf("Orderly:                        %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
                                 } while (0);
                 }
