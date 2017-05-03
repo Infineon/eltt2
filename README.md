@@ -27,8 +27,6 @@ A TPM 2.0 evaluation board can be ordered in the [Hitex Webshop](https://www.ehi
   <img src="https://cloud.githubusercontent.com/assets/19730245/25651091/77a84744-2fe1-11e7-91bd-a2e39678202d.JPG" width="350"/>
 </p>
 
-![tpm_slb9670_raspberry](https://cloud.githubusercontent.com/assets/19730245/25651091/77a84744-2fe1-11e7-91bd-a2e39678202d.JPG)
-
 In order to execute ELTT2, you need to compile it first:
  1. Switch to the directory with the ELTT2 source code
  2. Compile the source code by typing the following command:
