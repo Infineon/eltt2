@@ -22,7 +22,7 @@ ELTT2 does not support machines with a big-endian CPU.
 
 A TPM 2.0 evaluation board can be ordered in the [Hitex Webshop](https://www.ehitex.de/evaluation-boards/infineon/2564/iridium-9670-tpm2.0-spi).
 
-![SLB9670 TPM 2.0 Evalutation Board](https://github.com/Infineon/eltt2/master/TPM_SLB9670_Raspberry.JPG)
+[[https://github.com/Infineon/eltt2/master/TPM_SLB9670_Raspberry.JPG]]
 
 In order to execute ELTT2, you need to compile it first:
  1. Switch to the directory with the ELTT2 source code
