@@ -83,7 +83,7 @@ int main(int argc, char **argv)
                 opterr = 0; // Disable getopt error messages in case of unknown parameters; we want to use our own error messages.
 
                 // Loop through parameters with getopt.
-                while (-1 != (option = getopt(argc, argv, "cghTa:A:b:d:e:E:G:r:R:s:S:t:u:z:")))
+                while (-1 != (option = getopt(argc, argv, "cgvhTa:A:b:d:e:E:G:r:R:s:S:t:u:z:")))
                 {
                         switch (option)
                         {
@@ -164,7 +164,11 @@ int main(int argc, char **argv)
                                         break;
 
                                 case 'g': // TPM_CC_GetCapability
-                                        ret_val = tpmtool_transmit(tpm2_getcapability, sizeof(tpm2_getcapability), tpm_response_buf, &tpm_response_buf_size);
+                                        ret_val = tpmtool_transmit(tpm2_getcapability_fixed, sizeof(tpm2_getcapability_fixed), tpm_response_buf, &tpm_response_buf_size);
+                                        break;
+
+                                case 'v': // TPM_CC_GetCapability
+                                        ret_val = tpmtool_transmit(tpm2_getcapability_var, sizeof(tpm2_getcapability_var), tpm_response_buf, &tpm_response_buf_size);
                                         break;
 
                                 case 'G': // TPM_CC_GetRandom
@@ -513,9 +517,14 @@ int response_print(uint8_t *response_buf, size_t resp_size, int option)
                                 printf("Shutdown works as expected.\n");
                                 break;
 
-                        case 'g': // Print the capability flags.
-                                ret_val = print_capability_flags(response_buf);
+                        case 'g': // Print the fixed capability flags.
+                                ret_val = print_capability_flags(response_buf, PT_FIXED_SELECTOR);
                                 break;
+
+                        case 'v': // Print the variable capability flags.
+                                ret_val = print_capability_flags(response_buf, PT_VAR_SELECTOR);
+                                break;
+
 
                         case 'G': // Print the returned random value in hex.
                                 printf("Random value:\n");
@@ -665,7 +674,8 @@ void print_help()
         printf("'-E <PCR index> <PCR digest>': PCR Extend SHA256\n");
         printf("        -> PCR index:  Enter the PCR index in hex like '17' for 0x17\n");
         printf("           PCR digest: Enter the value to extend the PCR with in hex like '0f56...' for {0x0f, 0x56, ...}\n");
-        printf("'-g': Get Capability\n");
+        printf("'-g': Get fixed capability values\n");
+        printf("'-v': Get variable capability values\n");
         printf("'-G <byte count>': Get Random\n");
         printf("        -> Enter desired number of random bytes in hex like '32' for 0x32\n");
         printf("'-h': Help\n");
@@ -686,166 +696,183 @@ void print_help()
         printf("        -> PCR index: Enter PCR number in hex like '17' for 0x17\n");
 }
 
-int print_capability_flags(uint8_t *response_buf)
+int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 {
         int ret_val = EXIT_SUCCESS;           // Return value.
         unsigned long long propertyValue = 0; // Value of the read property.
         unsigned long long i = 0, j = 0;      // Position counter.
         int tmp = 0;                          // Temporary buffer.
 
-        do
-        {
-                NULL_POINTER_CHECK(response_buf);
-
-                printf("\nTPM capability information:\n");
-                printf("=========================================================\n");
-                printf("TPM_PT_FAMILY_INDICATOR:        %c%c%c%c\n", response_buf[23], response_buf[24], response_buf[25], response_buf[26]);
-
-                ret_val = buf_to_uint64(response_buf, 31, 4, &propertyValue);
-                RET_VAL_CHECK(ret_val);
-
-                printf("TPM_PT_LEVEL:                   %llu\n", propertyValue);
-
-                ret_val = buf_to_uint64(response_buf, 39, 4, &propertyValue);
-                RET_VAL_CHECK(ret_val);
-
-                printf("TPM_PT_REVISION:                %llu\n", propertyValue);
-
-                ret_val = buf_to_uint64(response_buf, 47, 4, &propertyValue);
-                RET_VAL_CHECK(ret_val);
-
-                printf("TPM_PT_DAY_OF_YEAR:             %llu\n", propertyValue);
-
-                ret_val = buf_to_uint64(response_buf, 55, 4, &propertyValue);
-                RET_VAL_CHECK(ret_val);
-
-                printf("TPM_PT_YEAR:                    %llu\n", propertyValue);
-
-                printf("TPM_PT_MANUFACTURER:            %c%c%c%c\n", response_buf[63], response_buf[64], response_buf[65], response_buf[66]);
-
-                printf("TPM_PT_VENDOR_STRING:           ");
-                printf("%c%c%c%c", response_buf[71], response_buf[72], response_buf[73], response_buf[74]);
-                printf("%c%c%c%c", response_buf[79], response_buf[80], response_buf[81], response_buf[82]);
-                printf("%c%c%c%c", response_buf[87], response_buf[88], response_buf[89], response_buf[90]);
-                printf("%c%c%c%c\n", response_buf[95], response_buf[96], response_buf[97], response_buf[98]);
-
-                ret_val = buf_to_uint64(response_buf, 103, 4, &propertyValue);
-                RET_VAL_CHECK(ret_val);
-
-                printf("TPM_PT_VENDOR_TPM_TYPE:         %llu\n", propertyValue);
-
-                ret_val = buf_to_uint64(response_buf, 111, 2, &propertyValue);
-                RET_VAL_CHECK(ret_val);
-
-                printf("TPM_PT_FIRMWARE_VERSION:        %llu", propertyValue);
-                ret_val = buf_to_uint64(response_buf, 113, 2, &propertyValue);
-                RET_VAL_CHECK(ret_val);
-
-                printf(".%llu", propertyValue);
-                ret_val = buf_to_uint64(response_buf, 119, 2, &propertyValue); // Check for output version.
-                RET_VAL_CHECK(ret_val);
-
-                if (2 <= propertyValue) // Print the new FIRMWARE_VERSION output.
+        if(cap_selector == PT_FIXED_SELECTOR)
                 {
-                        ret_val = buf_to_uint64(response_buf, 120, 2, &propertyValue);
-                        RET_VAL_CHECK(ret_val);
+                        do
+                                {
+                                        NULL_POINTER_CHECK(response_buf);
 
-                        printf(".%llu", propertyValue);
-                        ret_val = buf_to_uint64(response_buf, 122, 1, &propertyValue);
-                        RET_VAL_CHECK(ret_val);
+                                        printf("\nTPM capability information of fixed properties:\n");
+                                        printf("=========================================================\n");
+                                        printf("TPM_PT_FAMILY_INDICATOR:        %c%c%c%c\n", response_buf[23], response_buf[24], response_buf[25], response_buf[26]);
 
-                        printf(".%llu\n", propertyValue);
+                                        ret_val = buf_to_uint64(response_buf, 31, 4, &propertyValue);
+                                        RET_VAL_CHECK(ret_val);
 
+                                        printf("TPM_PT_LEVEL:                   %llu\n", propertyValue);
+
+                                        ret_val = buf_to_uint64(response_buf, 39, 4, &propertyValue);
+                                        RET_VAL_CHECK(ret_val);
+
+                                        printf("TPM_PT_REVISION:                %llu\n", propertyValue);
+
+                                        ret_val = buf_to_uint64(response_buf, 47, 4, &propertyValue);
+                                        RET_VAL_CHECK(ret_val);
+
+                                        printf("TPM_PT_DAY_OF_YEAR:             %llu\n", propertyValue);
+
+                                        ret_val = buf_to_uint64(response_buf, 55, 4, &propertyValue);
+                                        RET_VAL_CHECK(ret_val);
+
+                                        printf("TPM_PT_YEAR:                    %llu\n", propertyValue);
+
+                                        printf("TPM_PT_MANUFACTURER:            %c%c%c%c\n", response_buf[63], response_buf[64], response_buf[65], response_buf[66]);
+
+                                        printf("TPM_PT_VENDOR_STRING:           ");
+                                        printf("%c%c%c%c", response_buf[71], response_buf[72], response_buf[73], response_buf[74]);
+                                        printf("%c%c%c%c", response_buf[79], response_buf[80], response_buf[81], response_buf[82]);
+                                        printf("%c%c%c%c", response_buf[87], response_buf[88], response_buf[89], response_buf[90]);
+                                        printf("%c%c%c%c\n", response_buf[95], response_buf[96], response_buf[97], response_buf[98]);
+
+                                        ret_val = buf_to_uint64(response_buf, 103, 4, &propertyValue);
+                                        RET_VAL_CHECK(ret_val);
+
+                                        printf("TPM_PT_VENDOR_TPM_TYPE:         %llu\n", propertyValue);
+
+                                        ret_val = buf_to_uint64(response_buf, 111, 2, &propertyValue);
+                                        RET_VAL_CHECK(ret_val);
+
+                                        printf("TPM_PT_FIRMWARE_VERSION:        %llu", propertyValue);
+                                        ret_val = buf_to_uint64(response_buf, 113, 2, &propertyValue);
+                                        RET_VAL_CHECK(ret_val);
+
+                                        printf(".%llu", propertyValue);
+                                        ret_val = buf_to_uint64(response_buf, 119, 2, &propertyValue); // Check for output version.
+                                        RET_VAL_CHECK(ret_val);
+
+                                        if (2 <= propertyValue) // Print the new FIRMWARE_VERSION output.
+                                                {
+                                                        ret_val = buf_to_uint64(response_buf, 120, 2, &propertyValue);
+                                                        RET_VAL_CHECK(ret_val);
+
+                                                        printf(".%llu", propertyValue);
+                                                        ret_val = buf_to_uint64(response_buf, 122, 1, &propertyValue);
+                                                        RET_VAL_CHECK(ret_val);
+
+                                                        printf(".%llu\n", propertyValue);
+
+                                                }
+                                        else // Print the old FIRMWARE_VERSION output.
+                                                {
+                                                        ret_val = buf_to_uint64(response_buf, 119, 4, &propertyValue);
+                                                        RET_VAL_CHECK(ret_val);
+
+                                                        printf(".%llu\n", propertyValue);
+                                                }
+
+
+                                        printf("\nTPM_PT_MEMORY:\n");
+                                        printf("=========================================================\n");
+
+                                        ret_val = buf_to_uint64(response_buf, 207, 4, &propertyValue);
+                                        RET_VAL_CHECK(ret_val);
+
+                                        i = 1; // bit 0
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 0 value.
+                                        printf("Shared RAM:                     %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+
+                                        i = i + i; // bit 1
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 1 value.
+                                        printf("Shared NV:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+
+                                        i = i * 2; // bit 2
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 2 value.
+                                        printf("Object Copied To Ram:           %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+                                        //bit 31:3 = reserved
+
+                                        printf("\nTPM_PT_PERMANENT:\n");
+                                        printf("=========================================================\n");
+                                        ret_val = buf_to_uint64(response_buf, 367, 4, &propertyValue);
+                                        RET_VAL_CHECK(ret_val);
+
+                                        i = 1; // bit 0
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 0 value.
+                                        printf("Owner Auth Set:                 %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+
+                                        i = i + i; // bit 1
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 1 value.
+                                        printf("Sendorsement Auth Set:          %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+
+                                        i = i * 2; // bit 2
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 2 value.
+                                        printf("Lockout Auth Set:               %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+
+                                        i = i * 2; // bit 3
+                                        i = i * 2; // bit 4
+                                        i = i * 2; // bit 5
+                                        i = i * 2; // bit 6
+                                        i = i * 2; // bit 7
+                                        //bit 7:3 = reserved
+
+                                        i = i * 2; // bit 8
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 8 value.
+                                        printf("Disable Clear:                  %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+
+                                        i = i * 2; // bit 9
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 9 value.
+                                        printf("In Lockout:                     %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+
+                                        i = i * 2; // bit 10
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 10 value.
+                                        printf("TPM Generated EPS:              %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+                                        //bit 31:11 = reserved
+
+                                } while (0);
                 }
-                else // Print the old FIRMWARE_VERSION output.
+        else if (cap_selector == 2)
                 {
-                        ret_val = buf_to_uint64(response_buf, 119, 4, &propertyValue);
-                        RET_VAL_CHECK(ret_val);
+                        do
+                                {
 
-                        printf(".%llu\n", propertyValue);
-                }
+                                        NULL_POINTER_CHECK(response_buf);
 
-                printf("\nTPM_PT_MEMORY:\n");
-                printf("=========================================================\n");
+                                        printf("\nTPM capability information of variable properties:\n");
+                                        printf("\n\n");
 
-                ret_val = buf_to_uint64(response_buf, 207, 4, &propertyValue);
-                RET_VAL_CHECK(ret_val);
+                                        ret_val = buf_to_uint64(response_buf, 31, 4, &propertyValue);
+                                        RET_VAL_CHECK(ret_val);
 
-                i = 1; // bit 0
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 0 value.
-                printf("Shared RAM:                     %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+                                        printf("\nTPM_PT_STARTUP_CLEAR:\n");
+                                        printf("=========================================================\n");
 
-                i = i + i; // bit 1
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 1 value.
-                printf("Shared NV:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+                                        i = 1; // bit 0
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 0 value.
+                                        printf("Ph Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
-                i = i * 2; // bit 2
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 2 value.
-                printf("Object Copied To Ram:           %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-                //bit 31:3 = reserved
+                                        i = i + i; // bit 1
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 1 value.
+                                        printf("Sh Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
-                printf("\nTPM_PT_PERMANENT:\n");
-                printf("=========================================================\n");
-                ret_val = buf_to_uint64(response_buf, 367, 4, &propertyValue);
-                RET_VAL_CHECK(ret_val);
+                                        i = i * 2; // bit 2
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 2 value.
+                                        printf("Eh Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+                                        //bit 30:3 = reserved
+                                        for(j = 2; j < 31; j++) // go to bit 31.
+                                                {
+                                                        i = i * 2;
+                                                }
+                                        tmp = ((propertyValue & i) == 0? 0:1); // Check bit 31 value.
+                                        printf("Orderly:                        %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
-                i = 1; // bit 0
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 0 value.
-                printf("Owner Auth Set:                 %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-                i = i + i; // bit 1
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 1 value.
-                printf("Sendorsement Auth Set:          %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-                i = i * 2; // bit 2
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 2 value.
-                printf("Lockout Auth Set:               %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-                i = i * 2; // bit 3
-                i = i * 2; // bit 4
-                i = i * 2; // bit 5
-                i = i * 2; // bit 6
-                i = i * 2; // bit 7
-                //bit 7:3 = reserved
-
-                i = i * 2; // bit 8
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 8 value.
-                printf("Disable Clear:                  %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-                i = i * 2; // bit 9
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 9 value.
-                printf("In Lockout:                     %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-                i = i * 2; // bit 10
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 10 value.
-                printf("TPM Generated EPS:              %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-                //bit 31:11 = reserved
-
-                printf("\nTPM_PT_STARTUP_CLEAR:\n");
-                printf("=========================================================\n");
-                ret_val = buf_to_uint64(response_buf, 375, 4, &propertyValue);
-                RET_VAL_CHECK(ret_val);
-
-                 i = 1; // bit 0
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 0 value.
-                printf("Ph Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-                i = i + i; // bit 1
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 1 value.
-                printf("Sh Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-                i = i * 2; // bit 2
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 2 value.
-                printf("Eh Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-                //bit 30:3 = reserved
-                for(j = 2; j < 31; j++) // go to bit 31.
-                {
-                       i = i * 2;
-                }
-                tmp = ((propertyValue & i) == 0? 0:1); // Check bit 31 value.
-                printf("Orderly:                        %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
-
-        } while (0);
+                                } while (0);
+                    }
 
         return ret_val;
 }

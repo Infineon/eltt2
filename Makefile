@@ -2,7 +2,7 @@
 # Copyright (c) Infineon Technologies AG
 
 CC=gcc
-CFLAGS=-Wall -Wextra
+CFLAGS=-Wall -Wextra -g
 
 all: eltt2
 

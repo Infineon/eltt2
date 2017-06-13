@@ -65,7 +65,8 @@ To get the TPM into the required state, call ELTT2 with the corresponding comman
  -d \<shutdown type\>            | Shutdown                       | \[u\]
  -e \<PCR index\> \<PCR digest\> | PCR Extend SHA-1               | \[u\]
  -E \<PCR index\> \<PCR digest\> | PCR Extend SHA-256             | \[u\]
- -g                              | Get Capability 'TPM Properties'| \[u\]
+ -g                              | Get fixed capability values    | \[u\]
+ -v                              | Get variable capability values | \[u\]
  -G \<data length\>              | Get Random                     | \[u\]
  -h                              | Help                           | \[-\]
  -r \<PCR index\>                | PCR Read SHA-1                 | \[u\]
@@ -111,7 +112,10 @@ With the "-E" command you can extend bytes in the selected PCR with SHA-256. To 
  ./eltt2 -E 17 41624364
 
 -g: <br>
-With the "-g" command you can read the TPM's properties.
+With the "-g" command you can read the TPM's fixed properties.
+
+-v: <br>
+With the "-v" command you can read the TPM's variable properties.
 
 -G: <br>
 With the "-G" command you can get a given amount of random bytes. Note that you can only request a maximum amount of 32 random bytes at once. For example, use the following command to get 20 (0x14) random bytes: <br>

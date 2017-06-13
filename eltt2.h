@@ -104,6 +104,10 @@
 #define MILISECOND_TO_SECOND 1000               ///< Convertion from miliseconds to seconds
 // hash
 #define STD_CC_HASH_SIZE 18                     ///< Hash command size
+// TPM_PT constants
+#define PT_FIXED_SELECTOR 1
+#define PT_VAR_SELECTOR 2
+
 
 //-------------"Macros"-------------
 // Null pointer check
@@ -268,7 +272,7 @@ int tpmtool_transmit(const uint8_t *buf, ssize_t length, uint8_t *response, ssiz
   * @retval     buf_to_uint64                   All error codes from buf_to_uint64.
   * @date       2014/06/26
   */
-int print_capability_flags(uint8_t *response_buf);
+int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector);
 
 /**
   * @brief      Print the clock info.
@@ -414,7 +418,7 @@ static const uint8_t tpm_cc_readclock[] ={
     0x00, 0x00, 0x01, 0x81     // TPM_CC_ReadClock
 };
 
-static const uint8_t tpm2_getcapability[] ={
+static const uint8_t tpm2_getcapability_fixed[] ={
     // TPM2_GetCapability (TPM_CAP_TPM_PROPERTIES, -- )
     0x80, 0x01,                // TPM_ST_NO_SESSIONS
     0x00, 0x00, 0x00, 0x16,    // commandSize
@@ -422,6 +426,16 @@ static const uint8_t tpm2_getcapability[] ={
     0x00, 0x00, 0x00, 0x06,    // TPM_CAP_TPM_PROPERTIES (Property Type: TPM_PT)
     0x00, 0x00, 0x01, 0x00,    // Property: TPM_PT_FAMILY_INDICATOR: PT_GROUP * 1 + 0
     0x00, 0x00, 0x00, 0x2D     // PropertyCount 2D (from 100 - 201)
+};
+
+static const uint8_t tpm2_getcapability_var[] ={
+    // TPM2_GetCapability (TPM_CAP_TPM_PROPERTIES, -- )
+    0x80, 0x01,                // TPM_ST_NO_SESSIONS
+    0x00, 0x00, 0x00, 0x16,    // commandSize
+    0x00, 0x00, 0x01, 0x7A,    // TPM_CC_GetCapability
+    0x00, 0x00, 0x00, 0x06,    // TPM_CAP_TPM_PROPERTIES (Property Type: TPM_PT)
+    0x00, 0x00, 0x02, 0x00,    // Property: TPM_PT_FAMILY_INDICATOR: PT_GROUP * 2 + 0
+    0x00, 0x00, 0x00, 0x2D     // PropertyCount 2D (from 200 - 301)
 };
 
 // Hash
