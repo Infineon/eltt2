@@ -808,7 +808,7 @@ int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 
                                         i = i + i; // bit 1
                                         tmp = ((propertyValue & i) == 0? 0:1); // Check bit 1 value.
-                                        printf("Sendorsement Auth Set:          %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
+                                        printf("Endorsement Auth Set:          %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
                                         i = i * 2; // bit 2
                                         tmp = ((propertyValue & i) == 0? 0:1); // Check bit 2 value.
