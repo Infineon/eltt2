@@ -1196,10 +1196,10 @@ static int get_random(char *data_length_string, uint8_t *response_buf)
 
 static int create_hash(char *data_string, char option, uint8_t *hash_cmd_buf, uint32_t hash_cmd_buf_size)
 {
-	int ret_val = EXIT_SUCCESS;			// Return value.
-	uint32_t offset = 0;				// Helper offset for generating command request.
-	uint16_t data_string_size = 0;		// Size of user input data.
-	const uint8_t *tpm_hash_alg = NULL;	// Pointer to hash algorithm identifier.
+	int ret_val = EXIT_SUCCESS;         // Return value.
+	uint32_t offset = 0;                // Helper offset for generating command request.
+	uint16_t data_string_size = 0;      // Size of user input data.
+	const uint8_t *tpm_hash_alg = NULL; // Pointer to hash algorithm identifier.
 
 	do
 	{
