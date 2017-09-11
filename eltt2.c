@@ -855,30 +855,26 @@ static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 			tmp = ((propertyValue & i) == 0? 0:1); // Check bit 0 value.
 			printf("Owner Auth Set:                 %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
-			i = i + i; // bit 1
+			i = i << 1; // bit 1
 			tmp = ((propertyValue & i) == 0? 0:1); // Check bit 1 value.
 			printf("Sendorsement Auth Set:          %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
-			i = i * 2; // bit 2
+			i = i << 1; // bit 2
 			tmp = ((propertyValue & i) == 0? 0:1); // Check bit 2 value.
 			printf("Lockout Auth Set:               %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
-			i = i * 2; // bit 3
-			i = i * 2; // bit 4
-			i = i * 2; // bit 5
-			i = i * 2; // bit 6
-			i = i * 2; // bit 7
 			//bit 7:3 = reserved
-
-			i = i * 2; // bit 8
+			
+			i = 1; // bit 0
+			i = i << 8; // bit 8
 			tmp = ((propertyValue & i) == 0? 0:1); // Check bit 8 value.
 			printf("Disable Clear:                  %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
-			i = i * 2; // bit 9
+			i = i << 1; // bit 9
 			tmp = ((propertyValue & i) == 0? 0:1); // Check bit 9 value.
 			printf("In Lockout:                     %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
-			i = i * 2; // bit 10
+			i = i << 1; // bit 10
 			tmp = ((propertyValue & i) == 0? 0:1); // Check bit 10 value.
 			printf("TPM Generated EPS:              %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 			//bit 31:11 = reserved
@@ -901,18 +897,17 @@ static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 			tmp = ((propertyValue & i) == 0? 0:1); // Check bit 0 value.
 			printf("Ph Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
-			i = i + i; // bit 1
+			i = i << 1; // bit 1
 			tmp = ((propertyValue & i) == 0? 0:1); // Check bit 1 value.
 			printf("Sh Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
-			i = i * 2; // bit 2
+			i = i << 1; // bit 2
 			tmp = ((propertyValue & i) == 0? 0:1); // Check bit 2 value.
 			printf("Eh Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 			//bit 30:3 = reserved
-			for(j = 2; j < 31; j++) // go to bit 31.
-			{
-				i = i * 2;
-			}
+			// go to bit 31.
+			i = 1;
+			i = i << 31;
 			tmp = ((propertyValue & i) == 0? 0:1); // Check bit 31 value.
 			printf("Orderly:                        %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 
