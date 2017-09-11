@@ -2,7 +2,6 @@
   * @brief      Embedded Linux TPM Toolbox 2 (ELTT2)
   * @details    eltt2.c implements some basic methods to communicate with the Infineon TPM 2.0 without the TDDL lib.
   * @file       eltt2.c
-  * @date       2014/06/26
   * @copyright  Copyright (c) 2014 - 2017 Infineon Technologies AG ( www.infineon.com ).\n
   * All rights reserved.\n
   * \n
@@ -28,14 +27,14 @@
 #include "eltt2.h"
 
 /**
-  * @brief		Main entry point of the application.
+  * @brief      Main entry point of the application.
   * @details    Handles the command line input and starts the communication with the TPM.
-  * @param		[in]	argc			Counter for input parameters.
-  * @param		[in]	**argv			Input parameters.
-  * @return		One of the listed return codes, the TPM return code or the error code stored in the global errno system variable.
-  * @retval		EXIT_SUCCESS			In case of success.
-  * @retval		ERR_BAD_CMD				In case an invalid command line option.
-  * @retval		value of errno			In case of memory allocation error.
+  * @param      [in]	argc			Counter for input parameters.
+  * @param      [in]	**argv			Input parameters.
+  * @return     One of the listed return codes, the TPM return code or the error code stored in the global errno system variable.
+  * @retval     EXIT_SUCCESS			In case of success.
+  * @retval     ERR_BAD_CMD				In case an invalid command line option.
+  * @retval     value of errno			In case of memory allocation error.
   * @retval		tpmtool_transmit		All error codes from tpmtool_transmit.
   * @retval		return_error_handling	All error codes from return_error_handling.
   * @retval		response_print			All error codes from response_print.
@@ -46,7 +45,6 @@
   * @retval		pcr_read				All error codes from pcr_read.
   * @retval		create_hash				All error codes from create_hash.
   * @retval		pcr_reset				All error codes from pcr_reset.
-  * @date		2014/06/26
   */
 int main(int argc, char **argv)
 {
