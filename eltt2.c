@@ -29,7 +29,7 @@
 
 /**
   * @brief		Main entry point of the application.
-  * @details	Handles the command line input and starts the communication with the TPM.
+  * @details    Handles the command line input and starts the communication with the TPM.
   * @param		[in]	argc			Counter for input parameters.
   * @param		[in]	**argv			Input parameters.
   * @return		One of the listed return codes, the TPM return code or the error code stored in the global errno system variable.
