@@ -1,9 +1,9 @@
 /**
-  * @brief		Embedded Linux TPM Toolbox 2 (ELTT2)
-  * @details	eltt2.c implements some basic methods to communicate with the Infineon TPM 2.0 without the TDDL lib.
-  * @file		eltt2.c
-  * @date		2014/06/26
-  * @copyright	Copyright (c) 2014 - 2017 Infineon Technologies AG ( www.infineon.com ).\n
+  * @brief      Embedded Linux TPM Toolbox 2 (ELTT2)
+  * @details    eltt2.c implements some basic methods to communicate with the Infineon TPM 2.0 without the TDDL lib.
+  * @file       eltt2.c
+  * @date       2014/06/26
+  * @copyright  Copyright (c) 2014 - 2017 Infineon Technologies AG ( www.infineon.com ).\n
   * All rights reserved.\n
   * \n
   * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
