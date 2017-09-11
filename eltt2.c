@@ -381,9 +381,9 @@ int main(int argc, char **argv)
 int tpmtool_transmit(const uint8_t *buf, ssize_t length, uint8_t *response, ssize_t *resp_length)
 {
 	// ---------- Transmit command given in buf to device with handle given in dev_tpm ----------
-	int ret_val = EXIT_SUCCESS;	// Return value.
-	int dev_tpm = -1;			// TPM device handle.
-	ssize_t transmit_size = 0;	// Amount of bytes sent to / received from the TPM.
+	int ret_val = EXIT_SUCCESS; // Return value.
+	int dev_tpm = -1;           // TPM device handle.
+	ssize_t transmit_size = 0;  // Amount of bytes sent to / received from the TPM.
 
 	do
 	{
@@ -754,10 +754,10 @@ static void print_help()
 
 static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 {
-	int ret_val = EXIT_SUCCESS;	// Return value.
-	uint64_t propertyValue = 0;	// Value of the read property.
-	uint64_t i = 0, j = 0;		// Position counter.
-	int tmp = 0;				// Temporary buffer.
+	int ret_val = EXIT_SUCCESS; // Return value.
+	uint64_t propertyValue = 0; // Value of the read property.
+	uint64_t i = 0, j = 0;      // Position counter.
+	int tmp = 0;                // Temporary buffer.
 
 	do
 	{
