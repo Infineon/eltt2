@@ -35,16 +35,16 @@
   * @retval     EXIT_SUCCESS			In case of success.
   * @retval     ERR_BAD_CMD				In case an invalid command line option.
   * @retval     value of errno			In case of memory allocation error.
-  * @retval		tpmtool_transmit		All error codes from tpmtool_transmit.
-  * @retval		return_error_handling	All error codes from return_error_handling.
-  * @retval		response_print			All error codes from response_print.
-  * @retval		create_hash_sequence	All error codes from create_hash_sequence.
-  * @retval		hexstr_to_bytearray		All error codes from hexstr_to_bytearray.
-  * @retval		pcr_extend				All error codes from pcr_extend.
-  * @retval		get_random				All error codes from get_random.
-  * @retval		pcr_read				All error codes from pcr_read.
-  * @retval		create_hash				All error codes from create_hash.
-  * @retval		pcr_reset				All error codes from pcr_reset.
+  * @retval     tpmtool_transmit		All error codes from tpmtool_transmit.
+  * @retval     return_error_handling	All error codes from return_error_handling.
+  * @retval     response_print			All error codes from response_print.
+  * @retval     create_hash_sequence	All error codes from create_hash_sequence.
+  * @retval     hexstr_to_bytearray		All error codes from hexstr_to_bytearray.
+  * @retval     pcr_extend				All error codes from pcr_extend.
+  * @retval     get_random				All error codes from get_random.
+  * @retval     pcr_read				All error codes from pcr_read.
+  * @retval     create_hash				All error codes from create_hash.
+  * @retval     pcr_reset				All error codes from pcr_reset.
   */
 int main(int argc, char **argv)
 {
