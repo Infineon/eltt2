@@ -1,7 +1,7 @@
 /**
-  * @brief      Embedded Linux TPM Toolbox 2 (ELTT2)
-  * @details    eltt2.c implements some basic methods to communicate with the Infineon TPM 2.0 without the TDDL lib.
-  * @file       eltt2.c
+  * @brief	Embedded Linux TPM Toolbox 2 (ELTT2)
+  * @details	eltt2.c implements some basic methods to communicate with the Infineon TPM 2.0 without the TDDL lib.
+  * @file	eltt2.c
   * @copyright  Copyright (c) 2014 - 2017 Infineon Technologies AG ( www.infineon.com ).\n
   * All rights reserved.\n
   * \n
@@ -27,37 +27,37 @@
 #include "eltt2.h"
 
 /**
-  * @brief      Main entry point of the application.
-  * @details    Handles the command line input and starts the communication with the TPM.
-  * @param      [in]	argc			Counter for input parameters.
-  * @param      [in]	**argv			Input parameters.
-  * @return     One of the listed return codes, the TPM return code or the error code stored in the global errno system variable.
-  * @retval     EXIT_SUCCESS			In case of success.
-  * @retval     ERR_BAD_CMD				In case an invalid command line option.
-  * @retval     value of errno			In case of memory allocation error.
-  * @retval     tpmtool_transmit		All error codes from tpmtool_transmit.
-  * @retval     return_error_handling	All error codes from return_error_handling.
-  * @retval     response_print			All error codes from response_print.
-  * @retval     create_hash_sequence	All error codes from create_hash_sequence.
-  * @retval     hexstr_to_bytearray		All error codes from hexstr_to_bytearray.
-  * @retval     pcr_extend				All error codes from pcr_extend.
-  * @retval     get_random				All error codes from get_random.
-  * @retval     pcr_read				All error codes from pcr_read.
-  * @retval     create_hash				All error codes from create_hash.
-  * @retval     pcr_reset				All error codes from pcr_reset.
+  * @brief					Main entry point of the application.
+  * @details					Handles the command line input and starts the communication with the TPM.
+  * @param	[in]	argc			Counter for input parameters.
+  * @param	[in]	**argv			Input parameters.
+  * @return	One of the listed return codes, the TPM return code or the error code stored in the global errno system variable.
+  * @retval	EXIT_SUCCESS			In case of success.
+  * @retval	ERR_BAD_CMD			In case an invalid command line option.
+  * @retval	value of errno			In case of memory allocation error.
+  * @retval	tpmtool_transmit		All error codes from tpmtool_transmit.
+  * @retval	return_error_handling		All error codes from return_error_handling.
+  * @retval	response_print			All error codes from response_print.
+  * @retval	create_hash_sequence		All error codes from create_hash_sequence.
+  * @retval	hexstr_to_bytearray		All error codes from hexstr_to_bytearray.
+  * @retval	pcr_extend			All error codes from pcr_extend.
+  * @retval	get_random			All error codes from get_random.
+  * @retval	pcr_read			All error codes from pcr_read.
+  * @retval	create_hash			All error codes from create_hash.
+  * @retval	pcr_reset			All error codes from pcr_reset.
   */
 int main(int argc, char **argv)
 {
 	// ---------- Local declarations ----------
-	int ret_val = EXIT_SUCCESS;         // Return value.
-	uint8_t *tpm_response_buf = NULL;   // Buffer for TPM response.
-	ssize_t tpm_response_buf_size = 0;  // Size of tpm_response_buf.
-	int i = 0;                          // Command line parsing counter.
-	int option = 0;                     // Command line option.
-	uint8_t *input_bytes = NULL;        // Custom command bytes for transmit in case of command line options -b and -E.
-	size_t input_bytes_size = 0;        // Size of input_bytes.
-	int no_transmission = 0;            // Flag to skip the transmission call, e.g. in case of command line option -h.
-	int tpm_error = 0;                  // Flag to indicate whether a TPM response has returned a TPM error code or not.
+	int ret_val = EXIT_SUCCESS;		// Return value.
+	uint8_t *tpm_response_buf = NULL;	// Buffer for TPM response.
+	ssize_t tpm_response_buf_size = 0;	// Size of tpm_response_buf.
+	int i = 0;				// Command line parsing counter.
+	int option = 0;				// Command line option.
+	uint8_t *input_bytes = NULL;		// Custom command bytes for transmit in case of command line options -b and -E.
+	size_t input_bytes_size = 0;		// Size of input_bytes.
+	int no_transmission = 0;		// Flag to skip the transmission call, e.g. in case of command line option -h.
+	int tpm_error = 0;			// Flag to indicate whether a TPM response has returned a TPM error code or not.
 
 	// ---------- Program flow ----------
 	printf("\n");
@@ -381,9 +381,9 @@ int main(int argc, char **argv)
 int tpmtool_transmit(const uint8_t *buf, ssize_t length, uint8_t *response, ssize_t *resp_length)
 {
 	// ---------- Transmit command given in buf to device with handle given in dev_tpm ----------
-	int ret_val = EXIT_SUCCESS; // Return value.
-	int dev_tpm = -1;           // TPM device handle.
-	ssize_t transmit_size = 0;  // Amount of bytes sent to / received from the TPM.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	int dev_tpm = -1;		// TPM device handle.
+	ssize_t transmit_size = 0;	// Amount of bytes sent to / received from the TPM.
 
 	do
 	{
@@ -391,7 +391,7 @@ int tpmtool_transmit(const uint8_t *buf, ssize_t length, uint8_t *response, ssiz
 		NULL_POINTER_CHECK(buf);
 		NULL_POINTER_CHECK(response);
 		NULL_POINTER_CHECK(resp_length);
-		
+
 		if (0 >= length)
 		{
 			ret_val = EINVAL;
@@ -521,7 +521,7 @@ static int response_print(uint8_t *response_buf, size_t resp_size, int option)
 	do
 	{
 		NULL_POINTER_CHECK(response_buf);
-		
+
 		if (0 >= resp_size)
 		{
 			ret_val = EINVAL;
@@ -603,14 +603,14 @@ static int response_print(uint8_t *response_buf, size_t resp_size, int option)
 
 static int print_response_buf(uint8_t *response_buf, size_t resp_size, uint32_t offset, int format)
 {
-	int ret_val = EXIT_SUCCESS; // Return value.
-	uint32_t i = 0;             // Loop variable.
-	uint64_t data_size = 0;     // Size of response data.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	uint32_t i = 0;			// Loop variable.
+	uint64_t data_size = 0;		// Size of response data.
 
 	do
 	{
 		NULL_POINTER_CHECK(response_buf);
-		
+
 		if (0 >= resp_size)
 		{
 			ret_val = EINVAL;
@@ -754,10 +754,10 @@ static void print_help()
 
 static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 {
-	int ret_val = EXIT_SUCCESS; // Return value.
-	uint64_t propertyValue = 0; // Value of the read property.
-	uint64_t propertyKey = 0;   // Key of the property.
-	int tmp = 0;                // Temporary buffer.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	uint64_t propertyValue = 0;	// Value of the read property.
+	uint64_t propertyKey = 0;	// Key of the property.
+	int tmp = 0;			// Temporary buffer.
 
 	do
 	{
@@ -894,7 +894,7 @@ static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 
 			printf("\nTPM capability information of variable properties:\n");
 			for(int x = 0x13; x<TPM_RESP_MAX_SIZE-8; x+=8)
-			{ 	//Iterate over each property key/value pair
+			{	//Iterate over each property key/value pair
 				ret_val = buf_to_uint64(response_buf, x, 4, &propertyKey, TPM_RESP_MAX_SIZE);
 				RET_VAL_CHECK(ret_val);
 				ret_val = buf_to_uint64(response_buf, x+4, 4, &propertyValue, TPM_RESP_MAX_SIZE);
@@ -931,11 +931,11 @@ static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 
 static int print_clock_info(uint8_t *response_buf)
 {
-	int ret_val = EXIT_SUCCESS; // Return value.
-	uint64_t propertyValue = 0; // Value of the read property.
-	uint64_t tmp_value = 0;     // Helper variable for calculating actual values.
-	uint64_t sec = 0;           // Value for seconds.
-	uint64_t tmp = 0;           // buf_to_uint64 return value.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	uint64_t propertyValue = 0;	// Value of the read property.
+	uint64_t tmp_value = 0;		// Helper variable for calculating actual values.
+	uint64_t sec = 0;		// Value for seconds.
+	uint64_t tmp = 0;		// buf_to_uint64 return value.
 
 	do
 	{
@@ -1010,9 +1010,9 @@ static int print_clock_info(uint8_t *response_buf)
 
 static int buf_to_uint64(uint8_t *input_buffer, uint32_t offset, uint32_t length, uint64_t *output_value, uint32_t input_buffer_size)
 {
-	int ret_val = EXIT_SUCCESS; // Return value.
-	uint32_t i = 0;             // Loop variable.
-	uint64_t tmp = 0;           // Temporary variable for value calculation.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	uint32_t i = 0;			// Loop variable.
+	uint64_t tmp = 0;		// Temporary variable for value calculation.
 
 	do
 	{
@@ -1029,9 +1029,9 @@ static int buf_to_uint64(uint8_t *input_buffer, uint32_t offset, uint32_t length
 		}
 		if (INT_MAX < input_buffer_size)
 		{
-			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter 'input_buffer_size' must be smaller or equal to %u.\n", INT_MAX);
-			 break;
+			ret_val = EINVAL;
+			fprintf(stderr, "Bad parameter. Value of parameter 'input_buffer_size' must be smaller or equal to %u.\n", INT_MAX);
+			break;
 		}
 		if (0 >= length)
 		{
@@ -1064,11 +1064,11 @@ static int buf_to_uint64(uint8_t *input_buffer, uint32_t offset, uint32_t length
 
 static int hexstr_to_bytearray(char *byte_string, uint8_t *byte_values, size_t byte_values_size)
 {
-	int ret_val = EXIT_SUCCESS; // Return value.
-	char hex_byte[3] = {0};     // Temporary buffer for input bytes.
-	char* invalidChars = NULL;  // Pointer to target buffer where method stores invalid characters.
-	uint32_t i = 0;             // Loop variable.
-	uint32_t unStrLen = 0;      // Temporary store for byte string length.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	char hex_byte[3] = {0};		// Temporary buffer for input bytes.
+	char* invalidChars = NULL;	// Pointer to target buffer where method stores invalid characters.
+	uint32_t i = 0;			// Loop variable.
+	uint32_t unStrLen = 0;		// Temporary store for byte string length.
 
 	do
 	{
@@ -1077,19 +1077,19 @@ static int hexstr_to_bytearray(char *byte_string, uint8_t *byte_values, size_t b
 
 		if (0 >= byte_values_size)
 		{
-			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter 'byte_values_size' must be larger than 0.\n");
-			 break;
+			ret_val = EINVAL;
+			fprintf(stderr, "Bad parameter. Value of parameter 'byte_values_size' must be larger than 0.\n");
+		break;
 		}
 		if (INT_MAX < byte_values_size)
 		{
-			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter 'byte_values_size' must be smaller or equal to %u.\n", INT_MAX);
-			 break;
+			ret_val = EINVAL;
+			fprintf(stderr, "Bad parameter. Value of parameter 'byte_values_size' must be smaller or equal to %u.\n", INT_MAX);
+			break;
 		}
 
 		memset(byte_values, 0, byte_values_size);
-		
+
 		unStrLen = strlen(byte_string);
 		if ((unStrLen / HEX_BYTE_STRING_LENGTH + unStrLen % HEX_BYTE_STRING_LENGTH) > (uint32_t)byte_values_size)
 		{
@@ -1140,23 +1140,23 @@ static int hexstr_to_bytearray(char *byte_string, uint8_t *byte_values, size_t b
 
 static int int_to_bytearray(uint64_t input, uint32_t input_size, uint8_t *output_byte)
 {
-	int ret_val = EXIT_SUCCESS; // Return value.
-	uint32_t i;                 // For-while-loop counter.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	uint32_t i;			// For-while-loop counter.
 
 	do
 	{
 		NULL_POINTER_CHECK(output_byte);
 		if (0 >= input_size)
 		{
-			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter 'input_size' must be larger than 0.\n");
-			 break;
+			ret_val = EINVAL;
+			fprintf(stderr, "Bad parameter. Value of parameter 'input_size' must be larger than 0.\n");
+			break;
 		}
 		if (sizeof(uint64_t) < input_size)
 		{
-			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter 'input_size' must be smaller or equal to %zu.\n", sizeof(uint64_t));
-			 break;
+			ret_val = EINVAL;
+			fprintf(stderr, "Bad parameter. Value of parameter 'input_size' must be smaller or equal to %zu.\n", sizeof(uint64_t));
+			break;
 		}
 
 		for (i = 0; i < input_size; i++)
@@ -1170,9 +1170,9 @@ static int int_to_bytearray(uint64_t input, uint32_t input_size, uint8_t *output
 
 static int get_random(char *data_length_string, uint8_t *response_buf)
 {
-	int ret_val = EXIT_SUCCESS;     // Return value.
-	uint8_t bytes_requested = 0;    // Amount of random bytes requested by the user.
-	size_t byte_string_size = 0;    // Size of user input.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	uint8_t bytes_requested = 0;	// Amount of random bytes requested by the user.
+	size_t byte_string_size = 0;	// Size of user input.
 
 	do
 	{
@@ -1206,20 +1206,20 @@ static int get_random(char *data_length_string, uint8_t *response_buf)
 	} while (0);
 
 	return ret_val;
- }
+}
 
 static int create_hash(char *data_string, char option, uint8_t *hash_cmd_buf, uint32_t hash_cmd_buf_size)
 {
-	int ret_val = EXIT_SUCCESS;         // Return value.
-	uint32_t offset = 0;                // Helper offset for generating command request.
-	uint16_t data_string_size = 0;      // Size of user input data.
-	const uint8_t *tpm_hash_alg = NULL; // Pointer to hash algorithm identifier.
+	int ret_val = EXIT_SUCCESS;		// Return value.
+	uint32_t offset = 0;			// Helper offset for generating command request.
+	uint16_t data_string_size = 0;		// Size of user input data.
+	const uint8_t *tpm_hash_alg = NULL;	// Pointer to hash algorithm identifier.
 
 	do
 	{
 		NULL_POINTER_CHECK(data_string);
 		NULL_POINTER_CHECK(hash_cmd_buf);
-		
+
 		if ('s' != option && 'S' != option)
 		{
 			ret_val = EINVAL;
@@ -1229,15 +1229,15 @@ static int create_hash(char *data_string, char option, uint8_t *hash_cmd_buf, ui
 
 		if (TPM_REQ_MAX_SIZE < hash_cmd_buf_size)
 		{
-			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter 'hash_cmd_buf_size' must be smaller or equal to %u.\n", TPM_REQ_MAX_SIZE);
-			 break;
+			ret_val = EINVAL;
+			fprintf(stderr, "Bad parameter. Value of parameter 'hash_cmd_buf_size' must be smaller or equal to %u.\n", TPM_REQ_MAX_SIZE);
+			break;
 		}
 		if (sizeof(tpm2_hash) > hash_cmd_buf_size)
 		{
-			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter 'hash_cmd_buf_size' must be at least %zu.\n", sizeof(tpm2_hash));
-			 break;
+			ret_val = EINVAL;
+			fprintf(stderr, "Bad parameter. Value of parameter 'hash_cmd_buf_size' must be at least %zu.\n", sizeof(tpm2_hash));
+			break;
 		}
 		data_string_size = strlen(data_string) / HEX_BYTE_STRING_LENGTH + strlen(data_string) % HEX_BYTE_STRING_LENGTH;
 		if (0 == data_string_size)
@@ -1294,34 +1294,34 @@ static int create_hash(char *data_string, char option, uint8_t *hash_cmd_buf, ui
 
 static int create_hash_sequence(char *data_string, char option, uint8_t *tpm_response_buf, ssize_t *tpm_response_buf_size)
 {
-	int ret_val = EXIT_SUCCESS;                         // Return value.
-	uint16_t data_string_bytes_size = 0;                // Size of user input data string in bytes.
-	uint8_t *data_string_bytes = NULL;                  // Buffer for user input data string as bytes.
-	uint32_t update_request_size = 0;                   // Size of user input string.
-	uint16_t transfer_bytes = 0;                        // Amount of bytes to be transmitted to the TPM.
-	uint16_t remaining_bytes = 0;                       // Amount of bytes not yet transmitted to the TPM.
-	uint32_t offset = 0;                                // Helper offset for generating command request.
-	uint64_t tpm_rc = TPM_RC_SUCCESS;                   // TPM return code.
-	uint8_t *update_request = NULL;                     // Buffer for update sequence command.
-	uint8_t sequence_handle[4];                         // Buffer for sequence handle.
-	ssize_t original_response_buf_size = 0;             // Backup of the original response buffer size.
-	ssize_t minimum_response_buf_size =
-	    TPM_CMD_HEADER_SIZE + sizeof(sequence_handle);  // Minimum success response buffer size (TPM command header + sequence handle)
+	int ret_val = EXIT_SUCCESS;		// Return value.
+	uint16_t data_string_bytes_size = 0;	// Size of user input data string in bytes.
+	uint8_t *data_string_bytes = NULL;	// Buffer for user input data string as bytes.
+	uint32_t update_request_size = 0;	// Size of user input string.
+	uint16_t transfer_bytes = 0;		// Amount of bytes to be transmitted to the TPM.
+	uint16_t remaining_bytes = 0;		// Amount of bytes not yet transmitted to the TPM.
+	uint32_t offset = 0;			// Helper offset for generating command request.
+	uint64_t tpm_rc = TPM_RC_SUCCESS;	// TPM return code.
+	uint8_t *update_request = NULL;		// Buffer for update sequence command.
+	uint8_t sequence_handle[4];		// Buffer for sequence handle.
+	ssize_t original_response_buf_size = 0;	// Backup of the original response buffer size.
+	// Minimum success response buffer size (TPM command header + sequence handle)
+	ssize_t minimum_response_buf_size = TPM_CMD_HEADER_SIZE + sizeof(sequence_handle);
 
 	do
 	{
 		NULL_POINTER_CHECK(tpm_response_buf);
 		NULL_POINTER_CHECK(data_string);
 		NULL_POINTER_CHECK(tpm_response_buf_size);
-		
+
 		memset(tpm_response_buf, 0, *tpm_response_buf_size);
 		memset(sequence_handle, 0, 4);
-				
+
 		if (TPM_RESP_MAX_SIZE < *tpm_response_buf_size)
 		{
-			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter '*tpm_response_buf_size' must be smaller or equal to %u.\n", TPM_RESP_MAX_SIZE);
-			 break;
+			ret_val = EINVAL;
+			fprintf(stderr, "Bad parameter. Value of parameter '*tpm_response_buf_size' must be smaller or equal to %u.\n", TPM_RESP_MAX_SIZE);
+			break;
 		}
 		if (minimum_response_buf_size > *tpm_response_buf_size)
 		{
@@ -1329,7 +1329,7 @@ static int create_hash_sequence(char *data_string, char option, uint8_t *tpm_res
 			fprintf(stderr, "Bad parameter. Value of parameter '*tpm_response_buf_size' must be at least %zu.\n", minimum_response_buf_size);
 			break;
 		}
-		
+
 		if ('a' != option && 'A' != option)
 		{
 			ret_val = EINVAL;
@@ -1465,21 +1465,21 @@ static int create_hash_sequence(char *data_string, char option, uint8_t *tpm_res
 
 static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cmd_buf, size_t pcr_cmd_buf_size, char option)
 {
-	int ret_val = EXIT_SUCCESS;     // Return value.
-	uint8_t pcr_index = 0;          // PCR index user input byte.
-	uint32_t pcr_digest_size = 0;   // Sizeof PCR digest user input.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	uint8_t pcr_index = 0;		// PCR index user input byte.
+	uint32_t pcr_digest_size = 0;	// Sizeof PCR digest user input.
 
 	do
 	{
 		NULL_POINTER_CHECK(pcr_index_str);
 		NULL_POINTER_CHECK(pcr_digest_str);
 		NULL_POINTER_CHECK(pcr_cmd_buf);
-		
+
 		if (TPM_REQ_MAX_SIZE < pcr_cmd_buf_size)
 		{
-			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter 'pcr_cmd_buf_size' size must be smaller or equal to %u.\n", TPM_REQ_MAX_SIZE);
-			 break;
+			ret_val = EINVAL;
+			fprintf(stderr, "Bad parameter. Value of parameter 'pcr_cmd_buf_size' size must be smaller or equal to %u.\n", TPM_REQ_MAX_SIZE);
+			break;
 		}
 		if (sizeof(tpm2_pcr_extend) > pcr_cmd_buf_size)
 		{
@@ -1487,9 +1487,9 @@ static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cm
 			fprintf(stderr, "Bad parameter. Value of parameter 'pcr_cmd_buf_size' must be at least %zu.\n", sizeof(tpm2_pcr_extend));
 			break;
 		}
-		
+
 		memset(pcr_cmd_buf, 0, pcr_cmd_buf_size);
-		
+
 		if ('e' != option && 'E' != option)
 		{
 			ret_val = EINVAL;
@@ -1560,10 +1560,10 @@ static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cm
 
 static int pcr_read(char *pcr_index_str, uint8_t *pcr_cmd_buf, char option)
 {
-	int ret_val = EXIT_SUCCESS; // Return value.
-	int pcr_byte_index = 0;     // The location for pcr_select on pcr_cmd_buf.
-	uint8_t pcr_select = 0;     // PCR index as mapped bit value.
-	uint8_t pcr_index = 0;      // PCR user input byte.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	int pcr_byte_index = 0;		// The location for pcr_select on pcr_cmd_buf.
+	uint8_t pcr_select = 0;		// PCR index as mapped bit value.
+	uint8_t pcr_index = 0;		// PCR user input byte.
 
 	do
 	{
@@ -1627,14 +1627,14 @@ static int pcr_read(char *pcr_index_str, uint8_t *pcr_cmd_buf, char option)
 
 static int pcr_reset(char *pcr_index_str, uint8_t *pcr_cmd_buf)
 {
-	int ret_val = EXIT_SUCCESS; // Return value.
-	uint8_t pcr_index = 0;      // PCR user input byte.
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	uint8_t pcr_index = 0;		// PCR user input byte.
 
 	do
 	{
 		NULL_POINTER_CHECK(pcr_index_str);
 		NULL_POINTER_CHECK(pcr_cmd_buf);
-		
+
 		memset(pcr_cmd_buf, 0, 27);
 
 		// Convert the command line input to bytes.
