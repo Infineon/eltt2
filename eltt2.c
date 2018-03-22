@@ -480,7 +480,7 @@ static int return_error_handling(uint8_t *response_buf)
 
 		if (TPM_RC_SUCCESS != tpm_rc)
 		{
-			fprintf(stderr, "TPM Error 0x%.8llX: ", tpm_rc);
+			fprintf(stderr, "TPM Error 0x%.8" PRIx64 ": ", tpm_rc);
 		}
 
 		// Handle some known TPM return codes.
@@ -626,7 +626,7 @@ static int print_response_buf(uint8_t *response_buf, size_t resp_size, uint32_t 
 		if (resp_size <= offset)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Offset %u cannot be equal or larger than input buffer size %u.\n", offset, resp_size);
+			fprintf(stderr, "Bad parameter. Offset %u cannot be equal or larger than input buffer size %zu.\n", offset, resp_size);
 			break;
 		}
 
@@ -780,16 +780,16 @@ static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 						printf("TPM_PT_FAMILY_INDICATOR:        %c%c%c%c\n", response_buf[x+4], response_buf[x+5], response_buf[x+6], response_buf[x+7]);
 						break;
 					case 0x100+1:
-						printf("TPM_PT_LEVEL:                   %llu\n", propertyValue);
+						printf("TPM_PT_LEVEL:                   %" PRIu64 "\n", propertyValue);
 						break;
 					case 0x100+2:
-						printf("TPM_PT_REVISION:                %llu\n", propertyValue);
+						printf("TPM_PT_REVISION:                %" PRIu64 "\n", propertyValue);
 						break;
 					case 0x100+3:
-						printf("TPM_PT_DAY_OF_YEAR:             %llu\n", propertyValue);
+						printf("TPM_PT_DAY_OF_YEAR:             %" PRIu64 "\n", propertyValue);
 						break;
 					case 0x100+4:
-						printf("TPM_PT_YEAR:                    %llu\n", propertyValue);
+						printf("TPM_PT_YEAR:                    %" PRIu64 "\n", propertyValue);
 						break;
 					case 0x100+5:
 						printf("TPM_PT_MANUFACTURER:            %c%c%c%c\n", response_buf[x+4], response_buf[x+5], response_buf[x+6], response_buf[x+7]);
@@ -808,17 +808,17 @@ static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 						printf("%c%c%c%c\n",  response_buf[x+4], response_buf[x+5], response_buf[x+6], response_buf[x+7]);
 						break;
 					case 0x100+10:
-						printf("TPM_PT_VENDOR_TPM_TYPE:         %llu\n", propertyValue);
+						printf("TPM_PT_VENDOR_TPM_TYPE:         %" PRIu64 "\n", propertyValue);
 						break;
 					case 0x100+11:
 						// special handling for firmware version XX.xx.xxxx.x
 						ret_val = buf_to_uint64(response_buf, x+4, 2, &propertyValue, TPM_RESP_MAX_SIZE);
 						RET_VAL_CHECK(ret_val);
-						printf("TPM_PT_FIRMWARE_VERSION:        %llu", propertyValue);
+						printf("TPM_PT_FIRMWARE_VERSION:        %" PRIu64 "", propertyValue);
 
 						ret_val = buf_to_uint64(response_buf, x+6, 2, &propertyValue, TPM_RESP_MAX_SIZE);
 						RET_VAL_CHECK(ret_val);
-						printf(".%llu", propertyValue);
+						printf(".%" PRIu64 "", propertyValue);
 						break;
 					case 0x100+12:
 						// special handling for firmware version XX.xx.xxxx.x
@@ -829,17 +829,17 @@ static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 						{
 							ret_val = buf_to_uint64(response_buf, x+5, 2, &propertyValue, TPM_RESP_MAX_SIZE);
 							RET_VAL_CHECK(ret_val);
-							printf(".%llu", propertyValue);
+							printf(".%" PRIu64 "", propertyValue);
 
 							ret_val = buf_to_uint64(response_buf, x+7, 1, &propertyValue, TPM_RESP_MAX_SIZE);
 							RET_VAL_CHECK(ret_val);
-							printf(".%llu\n", propertyValue);
+							printf(".%" PRIu64 "\n", propertyValue);
 						}
 						else
 						{
 							ret_val = buf_to_uint64(response_buf, x+4, 4, &propertyValue, TPM_RESP_MAX_SIZE);
 							RET_VAL_CHECK(ret_val);
-							printf(".%llu\n", propertyValue);
+							printf(".%" PRIu64 "\n", propertyValue);
 						}
 						break;
 
@@ -947,60 +947,60 @@ static int print_clock_info(uint8_t *response_buf)
 		ret_val = buf_to_uint64(response_buf, TPM_CMD_HEADER_SIZE, 8, &propertyValue, TPM_RESP_MAX_SIZE);
 		RET_VAL_CHECK(ret_val);
 
-		printf("Time since the last TPM_Init:\n%llu ms  =  ", propertyValue);
+		printf("Time since the last TPM_Init:\n%" PRIu64 " ms  =  ", propertyValue);
 
 		sec = propertyValue / MILISECOND_TO_SECOND;
 		tmp_value = sec / YEAR_SECONDS;
-		printf("%llu y, ", tmp_value);
+		printf("%" PRIu64 " y, ", tmp_value);
 
 		tmp_value = (sec % YEAR_SECONDS) / DAY_SECONDS;
-		printf("%llu d, ", tmp_value);
+		printf("%" PRIu64 " d, ", tmp_value);
 
 		tmp_value = ((sec % YEAR_SECONDS) % DAY_SECONDS) / HOUR_SECONDS;
-		printf("%llu h, ", tmp_value);
+		printf("%" PRIu64 " h, ", tmp_value);
 
 		tmp_value = (((sec % YEAR_SECONDS) % DAY_SECONDS) % HOUR_SECONDS) / MINUTE_SECONDS;
-		printf("%llu min, ", tmp_value);
+		printf("%" PRIu64 " min, ", tmp_value);
 
 		tmp_value = (((sec % YEAR_SECONDS) % DAY_SECONDS) % HOUR_SECONDS) % MINUTE_SECONDS;
-		printf("%llu s, ", tmp_value);
+		printf("%" PRIu64 " s, ", tmp_value);
 
 		tmp_value = propertyValue % MILISECOND_TO_SECOND;
-		printf("%llu ms\n\n", tmp_value);
+		printf("%" PRIu64 " ms\n\n", tmp_value);
 
 		ret_val = buf_to_uint64(response_buf, 18, 8, &propertyValue, TPM_RESP_MAX_SIZE);
 		RET_VAL_CHECK(ret_val);
 
-		printf("Time during which the TPM has been powered:\n%llu ms  =  ", propertyValue);
+		printf("Time during which the TPM has been powered:\n%" PRIu64 " ms  =  ", propertyValue);
 
 		sec = propertyValue / MILISECOND_TO_SECOND;
 		tmp_value = sec / YEAR_SECONDS;
-		printf("%llu y, ", tmp_value);
+		printf("%" PRIu64 " y, ", tmp_value);
 
 		tmp_value = (sec % YEAR_SECONDS) / DAY_SECONDS;
-		printf("%llu d, ", tmp_value);
+		printf("%" PRIu64 " d, ", tmp_value);
 
 		tmp_value = ((sec % YEAR_SECONDS) % DAY_SECONDS) / HOUR_SECONDS;
-		printf("%llu h, ", tmp_value);
+		printf("%" PRIu64 " h, ", tmp_value);
 
 		tmp_value = (((sec % YEAR_SECONDS) % DAY_SECONDS) % HOUR_SECONDS) / MINUTE_SECONDS;
-		printf("%llu min, ", tmp_value);
+		printf("%" PRIu64 " min, ", tmp_value);
 
 		tmp_value = (((sec % YEAR_SECONDS) % DAY_SECONDS) % HOUR_SECONDS) % MINUTE_SECONDS;
-		printf("%llu s, ", tmp_value);
+		printf("%" PRIu64 " s, ", tmp_value);
 
 		tmp_value = propertyValue % MILISECOND_TO_SECOND;
-		printf("%llu ms\n\n", tmp_value);
+		printf("%" PRIu64 " ms\n\n", tmp_value);
 
 		ret_val = buf_to_uint64(response_buf, 26, 4, &tmp, TPM_RESP_MAX_SIZE);
 		RET_VAL_CHECK(ret_val);
 
-		printf("TPM Reset since the last TPM2_Clear:            %llu\n", tmp);
+		printf("TPM Reset since the last TPM2_Clear:            %" PRIu64 "\n", tmp);
 
 		ret_val = buf_to_uint64(response_buf, 30, 4, &tmp, TPM_RESP_MAX_SIZE);
 		RET_VAL_CHECK(ret_val);
 
-		printf("Number of times that TPM2_Shutdown:             %llu\n", tmp);
+		printf("Number of times that TPM2_Shutdown:             %" PRIu64 "\n", tmp);
 
 		printf("Safe:                                           %i = %s", response_buf[34], (response_buf[34]? "Yes\n" : "No\n"));
 	} while (0);
@@ -1048,7 +1048,7 @@ static int buf_to_uint64(uint8_t *input_buffer, uint32_t offset, uint32_t length
 		if (sizeof(uint64_t) < length)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Input buffer length remaining from offset must be smaller than %u.\n", sizeof(uint64_t));
+			fprintf(stderr, "Bad parameter. Input buffer length remaining from offset must be smaller than %zu.\n", sizeof(uint64_t));
 			break;
 		}
 
@@ -1155,7 +1155,7 @@ static int int_to_bytearray(uint64_t input, uint32_t input_size, uint8_t *output
 		if (sizeof(uint64_t) < input_size)
 		{
 			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter 'input_size' must be smaller or equal to %u.\n", sizeof(uint64_t));
+			 fprintf(stderr, "Bad parameter. Value of parameter 'input_size' must be smaller or equal to %zu.\n", sizeof(uint64_t));
 			 break;
 		}
 
@@ -1236,7 +1236,7 @@ static int create_hash(char *data_string, char option, uint8_t *hash_cmd_buf, ui
 		if (sizeof(tpm2_hash) > hash_cmd_buf_size)
 		{
 			 ret_val = EINVAL;
-			 fprintf(stderr, "Bad parameter. Value of parameter 'hash_cmd_buf_size' must be at least %u.\n", sizeof(tpm2_hash));
+			 fprintf(stderr, "Bad parameter. Value of parameter 'hash_cmd_buf_size' must be at least %zu.\n", sizeof(tpm2_hash));
 			 break;
 		}
 		data_string_size = strlen(data_string) / HEX_BYTE_STRING_LENGTH + strlen(data_string) % HEX_BYTE_STRING_LENGTH;
@@ -1249,7 +1249,7 @@ static int create_hash(char *data_string, char option, uint8_t *hash_cmd_buf, ui
 		if (hash_cmd_buf_size - sizeof(tpm2_hash) < data_string_size)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Input data size must be smaller or equal to %u.\n", hash_cmd_buf_size - sizeof(tpm2_hash));
+			fprintf(stderr, "Bad parameter. Input data size must be smaller or equal to %zu.\n", hash_cmd_buf_size - sizeof(tpm2_hash));
 			break;
 		}
 
@@ -1326,7 +1326,7 @@ static int create_hash_sequence(char *data_string, char option, uint8_t *tpm_res
 		if (minimum_response_buf_size > *tpm_response_buf_size)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter '*tpm_response_buf_size' must be at least %u.\n", minimum_response_buf_size);
+			fprintf(stderr, "Bad parameter. Value of parameter '*tpm_response_buf_size' must be at least %zu.\n", minimum_response_buf_size);
 			break;
 		}
 		
@@ -1484,7 +1484,7 @@ static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cm
 		if (sizeof(tpm2_pcr_extend) > pcr_cmd_buf_size)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter 'pcr_cmd_buf_size' must be at least %u.\n", sizeof(tpm2_pcr_extend));
+			fprintf(stderr, "Bad parameter. Value of parameter 'pcr_cmd_buf_size' must be at least %zu.\n", sizeof(tpm2_pcr_extend));
 			break;
 		}
 		
