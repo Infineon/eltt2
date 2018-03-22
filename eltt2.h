@@ -71,6 +71,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <strings.h>
+#include <inttypes.h>
 
 //-------------"Defines"-------------
 #define TPM_RESP_MAX_SIZE		4096			///< This is the maximum possible TPM response size in bytes.
