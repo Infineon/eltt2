@@ -733,7 +733,7 @@ static void print_help()
 	printf("'-g': Get fixed capability values\n");
 	printf("'-v': Get variable capability values\n");
 	printf("'-G <byte count>': Get Random\n");
-	printf("        -> Enter desired number of random bytes in hex like '32' for 0x32\n");
+	printf("        -> Enter desired number of random bytes in hex like '20' for 0x20 (=32 bytes, maximum)\n");
 	printf("'-h': Help\n");
 	printf("'-r <PCR index>': PCR Read SHA-1\n");
 	printf("        -> PCR index: Enter PCR number in hex like '17' for 0x17\n");
