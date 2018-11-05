@@ -171,7 +171,7 @@ If you have any questions or problems, please read the section "FAQ and
 Troubleshooting" in this document.
 In case you still have questions, contact your local Infineon
 Representative.
-Further information is available at http://www.infineon.com/tpm.
+Further information is available at https://www.infineon.com/tpm.
 
 
 # 4. FAQ and Troubleshooting
