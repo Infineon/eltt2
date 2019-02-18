@@ -34,7 +34,7 @@ In order to execute ELTT2, you need to compile it first:
 
 Due to hardware (and thus TPM) access restrictions for normal users, ELTT2 requires root (aka superuser or administrator) privileges. They can be obtained e.g. by using the 'sudo' command on Debian Linux derivates.
 
-The Infineon [TPM 2.0 Application Note](https://www.infineon.com/dgdl/Infineon-TPM20_SLB6970-AN-v01_00-EN.zip?fileId=5546d4625acbae4c015ad6d953664083) shows how the TPM device driver can be set up (e.g. for Linux Kernel 4.4).
+The Infineon [TPM 2.0 Application Note](https://www.infineon.com/dgdl/Infineon-App-Note-SLx9670-TPM2.0_Embedded_RPi_DI_SLx-AN-v01_20-EN.pdf?fileId=5546d46267c74c9a01684b96e69f5d7b) shows how the TPM device driver can be set up (e.g. for Linux Kernel 4.14).
 
 
 
