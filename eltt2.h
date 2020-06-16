@@ -349,14 +349,14 @@ static const uint8_t tpm2_startup_clear[] = {
 	0x80, 0x01,			// TPM_ST_NO_SESSIONS
 	0x00, 0x00, 0x00, 0x0C,		// commandSize
 	0x00, 0x00, 0x01, 0x44,		// TPM_CC_Startup
-	0x00, 0x00			// TPM_ST_CLEAR
+	0x00, 0x00			// TPM_SU_CLEAR
 };
 
 static const uint8_t tpm2_startup_state[] = {
 	0x80, 0x01,			// TPM_ST_NO_SESSIONS
 	0x00, 0x00, 0x00, 0x0C,		// commandSize
 	0x00, 0x00, 0x01, 0x44,		// TPM_CC_Startup
-	0x00, 0x01			// TPM_ST_STATE
+	0x00, 0x01			// TPM_SU_STATE
 };
 
 static const uint8_t tpm_cc_shutdown_clear[] = {
@@ -426,7 +426,7 @@ static const uint8_t tpm2_getcapability_fixed[] ={
 	0x00, 0x00, 0x01, 0x7A,		// TPM_CC_GetCapability
 	0x00, 0x00, 0x00, 0x06,		// TPM_CAP_TPM_PROPERTIES (Property Type: TPM_PT)
 	0x00, 0x00, 0x01, 0x00,		// Property: TPM_PT_FAMILY_INDICATOR: PT_GROUP * 1 + 0
-	0x00, 0x00, 0x00, 0x2D		// PropertyCount 2D (from 100 - 201)
+	0x00, 0x00, 0x00, 0x66		// PropertyCount 102 (from 100 - 201)
 };
 
 static const uint8_t tpm2_getcapability_var[] ={
@@ -435,7 +435,7 @@ static const uint8_t tpm2_getcapability_var[] ={
 	0x00, 0x00, 0x01, 0x7A,		// TPM_CC_GetCapability
 	0x00, 0x00, 0x00, 0x06,		// TPM_CAP_TPM_PROPERTIES (Property Type: TPM_PT)
 	0x00, 0x00, 0x02, 0x00,		// Property: TPM_PT_FAMILY_INDICATOR: PT_GROUP * 2 + 0
-	0x00, 0x00, 0x00, 0x2D		// PropertyCount 2D (from 200 - 301)
+	0x00, 0x00, 0x00, 0x02		// PropertyCount 02 (from 200 - 201)
 };
 
 // Hash
