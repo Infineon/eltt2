@@ -115,6 +115,8 @@
 // TPM_PT constants
 #define PT_FIXED_SELECTOR		1		///< Fixed GetCapability Flags
 #define PT_VAR_SELECTOR			2		///< Variable GetCapability Flags
+#define CHECK_ASCII             1       ///< Check printable characters of properties.
+#define DONT_CHECK_ASCII        0       ///< Don't check printable characters of properties.
 
 //-------------"Macros"-------------
 // Null pointer check
@@ -284,11 +286,14 @@ static int tpmtool_transmit(const uint8_t *buf, ssize_t length, uint8_t *respons
   * @retval	buf_to_uint64			All error codes from buf_to_uint64.
   * @date	2014/06/26
   */
-static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector);
+static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector, int check_ascii);
 
 /**
   * @brief	Print the clock info.
   * @param	[in]	*response_buf		TPM response.
+  * @param  [in]    cap_selector        The tag for the selected capability.
+  * @param  [in]    check_ascii         Flag whether it should be checked whether characters to be printed
+  *                                     are ASCII characters.
   * @return	One of the listed return codes.
   * @retval	EINVAL				In case of a NULL pointer.
   * @retval	EXIT_SUCCESS			In case of success.

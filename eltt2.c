@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 		opterr = 0; // Disable getopt error messages in case of unknown parameters; we want to use our own error messages.
 
 		// Loop through parameters with getopt.
-		while (-1 != (option = getopt(argc, argv, "cgvhTa:A:b:d:e:E:G:r:R:s:S:t:u:z:")))
+		while (-1 != (option = getopt(argc, argv, "cgxvhTa:A:b:d:e:E:G:r:R:s:S:t:u:z:")))
 		{
 			switch (option)
 			{
@@ -161,6 +161,7 @@ int main(int argc, char **argv)
 					ret_val = tpmtool_transmit(input_bytes, input_bytes_size, tpm_response_buf, &tpm_response_buf_size);
 					break;
 
+				case 'x': // TPM_CC_GetCapability (hex output for non ascii chars)
 				case 'g': // TPM_CC_GetCapability
 					ret_val = tpmtool_transmit(tpm2_getcapability_fixed, sizeof(tpm2_getcapability_fixed), tpm_response_buf, &tpm_response_buf_size);
 					break;
@@ -556,11 +557,15 @@ static int response_print(uint8_t *response_buf, size_t resp_size, int option)
 				break;
 
 			case 'g': // Print the fixed capability flags.
-				ret_val = print_capability_flags(response_buf, PT_FIXED_SELECTOR);
+				ret_val = print_capability_flags(response_buf, PT_FIXED_SELECTOR, DONT_CHECK_ASCII);
+				break;
+
+			case 'x': // Print the fixed capability flags (not printable characters in hex format).
+				ret_val = print_capability_flags(response_buf, PT_FIXED_SELECTOR, CHECK_ASCII);
 				break;
 
 			case 'v': // Print the variable capability flags.
-				ret_val = print_capability_flags(response_buf, PT_VAR_SELECTOR);
+				ret_val = print_capability_flags(response_buf, PT_VAR_SELECTOR, DONT_CHECK_ASCII);
 				break;
 
 			case 'G': // Print the returned random value in hex.
@@ -731,6 +736,7 @@ static void print_help()
 	printf("        -> PCR index:  Enter the PCR index in hex like '17' for 0x17\n");
 	printf("           PCR digest: Enter the value to extend the PCR with in hex like '0f56...' for {0x0f, 0x56, ...}\n");
 	printf("'-g': Get fixed capability values\n");
+	printf("'-x': Get fixed capability values (print not printable chars in hex format)\n");
 	printf("'-v': Get variable capability values\n");
 	printf("'-G <byte count>': Get Random\n");
 	printf("        -> Enter desired number of random bytes in hex like '20' for 0x20 (=32 bytes, maximum)\n");
@@ -752,7 +758,18 @@ static void print_help()
 	printf("        -> PCR index: Enter PCR number in hex like '17' for 0x17\n");
 }
 
-static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
+static void print_chars(uint8_t *characters, int num_chars, int check_ascii) {
+	int i;
+	for (i = 0; i < num_chars; i++) {
+		if (check_ascii && !isprint(characters[i])) {
+			printf("(0x%x)", characters[i]);
+		} else {
+			printf("%c", characters[i]);
+		}
+	}
+}
+
+static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector, int check_ascii)
 {
 	int ret_val = EXIT_SUCCESS;	// Return value.
 	uint64_t propertyValue = 0;	// Value of the read property.
@@ -777,7 +794,9 @@ static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 				switch(propertyKey)
 				{
 					case 0x100:
-						printf("TPM_PT_FAMILY_INDICATOR:        %c%c%c%c\n", response_buf[x+4], response_buf[x+5], response_buf[x+6], response_buf[x+7]);
+						printf("TPM_PT_FAMILY_INDICATOR:        ");
+						print_chars(&response_buf[4], 4, check_ascii);
+						printf("\n");
 						break;
 					case 0x100+1:
 						printf("TPM_PT_LEVEL:                   %" PRIu64 "\n", propertyValue);
@@ -792,20 +811,23 @@ static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 						printf("TPM_PT_YEAR:                    %" PRIu64 "\n", propertyValue);
 						break;
 					case 0x100+5:
-						printf("TPM_PT_MANUFACTURER:            %c%c%c%c\n", response_buf[x+4], response_buf[x+5], response_buf[x+6], response_buf[x+7]);
+						printf("TPM_PT_MANUFACTURER:            ");
+						print_chars(&response_buf[x+4], 4, check_ascii);
+						printf("\n");
 						break;
 					case 0x100+6:
 						printf("TPM_PT_VENDOR_STRING:           ");
-						printf("%c%c%c%c",  response_buf[x+4], response_buf[x+5], response_buf[x+6], response_buf[x+7]);
+						print_chars(&response_buf[x+4], 4, check_ascii);
 						break;
 					case 0x100+7: // it is assumed that TPM_PT_VENDOR_STRING_2 follows _1
-						printf("%c%c%c%c",  response_buf[x+4], response_buf[x+5], response_buf[x+6], response_buf[x+7]);
+						print_chars(&response_buf[x+4], 4, check_ascii);
 						break;
 					case 0x100+8:
-						printf("%c%c%c%c",  response_buf[x+4], response_buf[x+5], response_buf[x+6], response_buf[x+7]);
+						print_chars(&response_buf[x+4], 4, check_ascii);
 						break;
 					case 0x100+9:
-						printf("%c%c%c%c\n",  response_buf[x+4], response_buf[x+5], response_buf[x+6], response_buf[x+7]);
+						print_chars(&response_buf[x+4], 4, check_ascii);
+						printf("\n");
 						break;
 					case 0x100+10:
 						printf("TPM_PT_VENDOR_TPM_TYPE:         %" PRIu64 "\n", propertyValue);
