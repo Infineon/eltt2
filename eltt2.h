@@ -123,6 +123,48 @@
 #define MEMSET_FREE(x, y) if (NULL != x) { memset(x, 0, y); free(x); x = NULL; } ///< Sets memory to 0, frees memory and sets pointer to NULL.
 // Return value check
 #define RET_VAL_CHECK(x) if (EXIT_SUCCESS != x) { break; } ///< Return value check
+// Command line option parser for hash algorithm
+#define HASH_ALG_PARSER(o, c) \
+	do { \
+		if (o == option) \
+		{ \
+			if (c == argc) \
+			{ \
+				hash_algo = ALG_SHA1; \
+			} \
+			else \
+			{ \
+				if (0 == strcasecmp(optarg, "sha1")) \
+				{ \
+					hash_algo = ALG_SHA1; \
+				} \
+				else if (0 == strcasecmp(optarg, "sha256")) \
+				{ \
+					hash_algo = ALG_SHA256; \
+				} \
+				else \
+				{ \
+					ret_val = ERR_BAD_CMD; \
+					fprintf(stderr, "Unknown option. Use '-h' for more information.\n"); \
+					break; \
+				} \
+				optarg = argv[optind++]; \
+			} \
+		} \
+		else \
+		{ \
+			hash_algo = ALG_SHA256; \
+		} \
+	} while (0)
+
+//--------------"Enums"--------------
+// Hash algorithms
+typedef enum hash_algo_enum
+{
+	ALG_NULL,
+	ALG_SHA1,
+	ALG_SHA256,
+} hash_algo_enum;
 
 //-------------"Methods"-------------
 /**
@@ -173,7 +215,7 @@ static int int_to_bytearray(uint64_t input, uint32_t input_size, uint8_t *output
   * @param	[in]	*pcr_digest_str		User input string of value to extend the selected PCR with.
   * @param	[out]	*pcr_cmd_buf		Return buffer for the complete command. Must be allocated by caller.
   * @param	[in]	*pcr_cmd_buf_size	Size of memory allocated at pcr_cmd_buf in bytes.
-  * @param	[in]	*option			Set to 'e' for extending with SHA-1 and to 'E' for SHA-256.
+  * @param	[in]	hash_algo		Set to ALG_SHA1 for extending with SHA-1 and to ALG_SHA256 for SHA-256.
   * @return	One of the listed return codes.
   * @retval	EINVAL				In case of a NULL pointer or an invalid option.
   * @retval	EXIT_SUCCESS			In case of success.
@@ -181,13 +223,13 @@ static int int_to_bytearray(uint64_t input, uint32_t input_size, uint8_t *output
   * @retval	hexstr_to_bytearray		All error codes from hexstr_to_bytearray.
   * @date	2014/06/26
   */
-static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cmd_buf, size_t pcr_cmd_buf_size, char option);
+static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cmd_buf, size_t pcr_cmd_buf_size, hash_algo_enum hash_algo);
 
 /**
   * @brief	Create the PCR_Read command.
   * @param	[in]	*pcr_index_str		User input string for PCR index.
   * @param	[out]	*pcr_cmd_buf		Return buffer for the complete command.
-  * @param	[in]	*option			Set to 'r' for reading with SHA-1 and to 'R' for SHA-256.
+  * @param	[in]	hash_algo		Set to ALG_SHA1 for reading with SHA-1 and to ALG_SHA256 for SHA-256.
   * @return	One of the listed return codes.
   * @retval	EINVAL				In case of a NULL pointer or an invalid option.
   * @retval	EXIT_SUCCESS			In case of success.
@@ -195,7 +237,7 @@ static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cm
   * @retval	hexstr_to_bytearray		All error codes from hexstr_to_bytearray.
   * @date	2014/06/26
   */
-static int pcr_read(char *pcr_index_str, uint8_t *pcr_cmd_buf, char option);
+static int pcr_read(char *pcr_index_str, uint8_t *pcr_cmd_buf, hash_algo_enum hash_algo);
 
 /**
   * @brief	Create the PCR_Reset command.
@@ -313,7 +355,7 @@ static int get_random(char *data_length_string, uint8_t *response_buf);
 /**
   * @brief	Create the simple hash command.
   * @param	[in]	*data_string		User input string of data to be hashed.
-  * @param	[in]	option			Set to 's' for hashing with SHA-1 and to 'S' for SHA-256.
+  * @param	[in]	hash_algo		Set to ALG_SHA1 for hashing with SHA-1 and to ALG_SHA256 for SHA-256.
   * @param	[out]	*hash_cmd_buf		Return buffer for the complete command.
   * @param	[in]	hash_cmd_buf_size	Return buffer size.
   * @return	One of the listed return codes.
@@ -323,12 +365,12 @@ static int get_random(char *data_length_string, uint8_t *response_buf);
   * @retval	int_to_bytearray		All error codes from int_to_bytearray.
   * @date	2014/06/26
   */
-static int create_hash(char *data_string, char option, uint8_t *hash_cmd_buf, uint32_t hash_cmd_buf_size);
+static int create_hash(char *data_string, hash_algo_enum hash_algo, uint8_t *hash_cmd_buf, uint32_t hash_cmd_buf_size);
 
 /**
   * @brief	Create and transmit a sequence of TPM commands for hashing larger amounts of data.
   * @param	[in]	*data_string		User input string of data to be hashed.
-  * @param	[in]	option			Set to 'a' for hashing with SHA-1 and to 'A' for SHA-256.
+  * @param	[in]	hash_algo		Set to ALG_SHA1 for hashing with SHA-1 and to ALG_SHA256 for SHA-256.
   * @param	[out]	*tpm_response_buf	TPM response.
   * @param	[out]	*tpm_response_buf_size	Size of tpm_response_buf.
   * @return	One of the listed return codes or the error code stored in the global errno system variable.
@@ -342,7 +384,7 @@ static int create_hash(char *data_string, char option, uint8_t *hash_cmd_buf, ui
   * @retval	print_response_buf		All error codes from print_response_buf
   * @date	2014/06/26
   */
-static int create_hash_sequence(char *data_string, char option, uint8_t *tpm_response_buf, ssize_t *tpm_response_buf_size);
+static int create_hash_sequence(char *data_string, hash_algo_enum hash_algo, uint8_t *tpm_response_buf, ssize_t *tpm_response_buf_size);
 
 //-------------"command bytes"-------------
 static const uint8_t tpm2_startup_clear[] = {
