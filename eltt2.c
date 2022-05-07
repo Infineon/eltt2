@@ -82,11 +82,11 @@ int main(int argc, char **argv)
 		opterr = 0; // Disable getopt error messages in case of unknown parameters; we want to use our own error messages.
 
 		// Loop through parameters with getopt.
-		while (-1 != (option = getopt(argc, argv, "cgvhTa:A:b:d:e:E:G:r:R:s:S:t:u:z:")))
+		while (-1 != (option = getopt(argc, argv, "cgvhTa:A:b:d:e:E:G:l:r:R:s:S:t:u:z:")))
 		{
 			switch (option)
 			{
-				case 'a': // TPM2_HashSequenceStart SHA-1
+				case 'a': // TPM2_HashSequenceStart SHA-1/256/384
 				case 'A': // TPM2_HashSequenceStart SHA-256
 					HASH_ALG_PARSER('a', 3);
 
@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 					}
 					break;
 
-				case 'e': // PCR_Extend SHA-1
+				case 'e': // PCR_Extend SHA-1/256/384
 				case 'E': // PCR_Extend SHA-256
 					if (4 > argc)
 					{
@@ -147,9 +147,13 @@ int main(int argc, char **argv)
 					{
 						input_bytes_size = sizeof(tpm2_pcr_extend) + TPM_SHA1_DIGEST_SIZE;
 					}
-					else
+					else if (ALG_SHA256 == hash_algo)
 					{
 						input_bytes_size = sizeof(tpm2_pcr_extend) + TPM_SHA256_DIGEST_SIZE;
+					}
+					else
+					{
+						input_bytes_size = sizeof(tpm2_pcr_extend) + TPM_SHA384_DIGEST_SIZE;
 					}
 					input_bytes = malloc(input_bytes_size);
 					MALLOC_ERROR_CHECK(input_bytes);
@@ -196,7 +200,24 @@ int main(int argc, char **argv)
 					no_transmission = 1;
 					break;
 
-				case 'r': // PCR_Read SHA-1
+				case 'l': // PCR_Allocate SHA-1/256/384
+					HASH_ALG_PARSER('l', -1);
+
+					// Allocate the input buffer for pcr_read and tpmtool_transmit.
+					input_bytes_size = sizeof(tpm2_pcr_allocate);
+					input_bytes = malloc(input_bytes_size);
+					MALLOC_ERROR_CHECK(input_bytes);
+					memset(input_bytes, 0, input_bytes_size);
+
+					// Create PCR_Allocate TPM request.
+					ret_val = pcr_allocate(input_bytes, hash_algo);
+					RET_VAL_CHECK(ret_val);
+
+					// Send bytes to TPM.
+					ret_val = tpmtool_transmit(input_bytes, input_bytes_size, tpm_response_buf, &tpm_response_buf_size);
+					break;
+
+				case 'r': // PCR_Read SHA-1/256/384
 				case 'R': // PCR_Read SHA-256
 					HASH_ALG_PARSER('r', 3);
 
@@ -214,7 +235,7 @@ int main(int argc, char **argv)
 					ret_val = tpmtool_transmit(input_bytes, input_bytes_size, tpm_response_buf, &tpm_response_buf_size);
 					break;
 
-				case 's': // Hash SHA-1
+				case 's': // Hash SHA-1/256/384
 				case 'S': // Hash SHA-256
 					HASH_ALG_PARSER('s', 3);
 
@@ -289,7 +310,7 @@ int main(int argc, char **argv)
 
 				default:
 					if ('a' == optopt || 'A' == optopt || 'b' == optopt || 'e' == optopt || 'E' == optopt || 'G' == optopt ||
-						'r' == optopt || 'R' == optopt || 's' == optopt || 'S' == optopt || 'z' == optopt)
+						'l' == optopt || 'r' == optopt || 'R' == optopt || 's' == optopt || 'S' == optopt || 'z' == optopt)
 					{
 						// Error output if arguments are missing.
 						fprintf(stderr, "Option '-%c' requires additional arguments. Use '-h' for more information.\n", optopt);
@@ -724,8 +745,8 @@ static int print_response_buf(uint8_t *response_buf, size_t resp_size, uint32_t 
 
 static void print_help()
 {
-	printf("'-a [hash algorithm] <data bytes>': Hash Sequence SHA-1/SHA-256 [default: SHA-1]\n");
-	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256'\n");
+	printf("'-a [hash algorithm] <data bytes>': Hash Sequence SHA-1/256/384 [default: SHA-1]\n");
+	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256', 'sha384'\n");
 	printf("           Data bytes: Enter a byte sequence like '0F56...' for {0x0f, 0x56, ...}\n");
 	printf("'-A <data bytes>': Hash Sequence SHA-256\n");
 	printf("        -> Data bytes: Enter a byte sequence like '0F56...' for {0x0f, 0x56, ...}\n");
@@ -734,8 +755,8 @@ static void print_help()
 	printf("'-c': Read Clock\n");
 	printf("'-d <shutdown type>': Shutdown\n");
 	printf("        -> Shutdown types: clear [default], state\n");
-	printf("'-e [hash algorithm] <PCR index> <PCR digest>': PCR Extend SHA-1/SHA-256 [default: SHA-1]\n");
-	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256'\n");
+	printf("'-e [hash algorithm] <PCR index> <PCR digest>': PCR Extend SHA-1/256/384 [default: SHA-1]\n");
+	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256', 'sha384'\n");
 	printf("           PCR index:  Enter the PCR index in hex like '17' for 0x17\n");
 	printf("           PCR digest: Enter the value to extend the PCR with in hex like '0f56...' for {0x0f, 0x56, ...}\n");
 	printf("'-E <PCR index> <PCR digest>': PCR Extend SHA-256\n");
@@ -746,13 +767,15 @@ static void print_help()
 	printf("'-G <byte count>': Get Random\n");
 	printf("        -> Enter desired number of random bytes in hex like '20' for 0x20 (=32 bytes, maximum)\n");
 	printf("'-h': Help\n");
-	printf("'-r [hash algorithm] <PCR index>': PCR Read SHA-1/SHA-256 [default: SHA-1]\n");
-	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256'\n");
+	printf("'-l <hash algorithm>': PCR allocate SHA-1/256/384\n");
+	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256', 'sha384'\n");
+	printf("'-r [hash algorithm] <PCR index>': PCR Read SHA-1/256/384 [default: SHA-1]\n");
+	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256', 'sha384'\n");
 	printf("           PCR index: Enter PCR number in hex like '17' for 0x17\n");
 	printf("'-R <PCR index>': PCR Read SHA-256\n");
 	printf("        -> PCR index: Enter PCR number in hex like '17' for 0x17\n");
-	printf("'-s [hash algorithm] <data bytes>': Hash SHA-1/SHA-256 [default: SHA-1]\n");
-	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256'\n");
+	printf("'-s [hash algorithm] <data bytes>': Hash SHA-1/256/384 [default: SHA-1]\n");
+	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256', 'sha384'\n");
 	printf("           Data bytes: Enter a byte sequence like '0F56...' for {0x0f, 0x56, ...}\n");
 	printf("'-S <data bytes>': Hash SHA-256\n");
 	printf("        -> Data bytes: Enter a byte sequence like '0F56...' for {0x0f, 0x56, ...}\n");
@@ -761,7 +784,7 @@ static void print_help()
 	printf("'-T': Get Test Result\n");
 	printf("'-u <startup type>': Startup\n");
 	printf("        -> Startup types: clear [default], state\n");
-	printf("'-z <PCR index>': PCR Reset SHA-1 and SHA-256\n");
+	printf("'-z <PCR index>': PCR Reset SHA-1, SHA-256, and SHA-384\n");
 	printf("        -> PCR index: Enter PCR number in hex like '17' for 0x17\n");
 }
 
@@ -1270,10 +1293,15 @@ static int create_hash(char *data_string, hash_algo_enum hash_algo, uint8_t *has
 			tpm_hash_alg = sha1_alg;
 			printf("\nTPM2_Hash of '%s' with SHA-1:\n", data_string);
 		}
-		else
+		else if (ALG_SHA256 == hash_algo)
 		{
 			tpm_hash_alg = sha256_alg;
 			printf("\nTPM2_Hash of '%s' with SHA-256:\n", data_string);
+		}
+		else
+		{
+			tpm_hash_alg = sha384_alg;
+			printf("\nTPM2_Hash of '%s' with SHA-384:\n", data_string);
 		}
 
 		offset = TPM_CMD_SIZE_OFFSET;
@@ -1344,10 +1372,15 @@ static int create_hash_sequence(char *data_string, hash_algo_enum hash_algo, uin
 			printf("\nTPM2_HashSequenceStart of '%s' with SHA-1:\n", data_string);
 			memcpy(tpm2_hash_sequence_start + 12, sha1_alg, sizeof(sha1_alg));
 		}
-		else
+		else if (ALG_SHA256 == hash_algo)
 		{
 			printf("\nTPM2_HashSequenceStart of '%s' with SHA-256:\n", data_string);
 			memcpy(tpm2_hash_sequence_start + 12, sha256_alg, sizeof(sha256_alg));
+		}
+		else
+		{
+			printf("\nTPM2_HashSequenceStart of '%s' with SHA-384:\n", data_string);
+			memcpy(tpm2_hash_sequence_start + 12, sha384_alg, sizeof(sha384_alg));
 		}
 
 		// Send the TPM2_HashSequenceStart command to the TPM.
@@ -1490,13 +1523,6 @@ static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cm
 
 		memset(pcr_cmd_buf, 0, pcr_cmd_buf_size);
 
-		if (ALG_SHA1 != hash_algo && ALG_SHA256 != hash_algo)
-		{
-			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Option argument must be 'e' or 'E'.\n");
-			break;
-		}
-
 		// Check and convert the command line input (PCR index) to bytes.
 		if (1 != strlen(pcr_index_str) / HEX_BYTE_STRING_LENGTH + strlen(pcr_index_str) % HEX_BYTE_STRING_LENGTH)
 		{
@@ -1527,6 +1553,12 @@ static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cm
 			fprintf(stderr, "Bad option. Maximum SHA-256 PCR digest size is 32 byte (64 characters), but you entered %u byte.\n", pcr_digest_size);
 			break;
 		}
+		if (ALG_SHA384 == hash_algo && TPM_SHA384_DIGEST_SIZE < pcr_digest_size)
+		{
+			ret_val = ERR_BAD_CMD;
+			fprintf(stderr, "Bad option. Maximum SHA-384 PCR digest size is 48 byte (96 characters), but you entered %u byte.\n", pcr_digest_size);
+			break;
+		}
 
 		// Copy basic command bytes.
 		memcpy(pcr_cmd_buf, tpm2_pcr_extend, sizeof(tpm2_pcr_extend));
@@ -1551,8 +1583,54 @@ static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cm
 			memcpy(pcr_cmd_buf + 31, sha256_alg, sizeof(sha256_alg));
 			printf("Extend PCR %i (SHA-256) with digest { ", pcr_index);
 		}
+		else if (ALG_SHA384 == hash_algo)
+		{
+			pcr_cmd_buf[5] = sizeof(tpm2_pcr_extend) + TPM_SHA384_DIGEST_SIZE;
+			memcpy(pcr_cmd_buf + 31, sha384_alg, sizeof(sha384_alg));
+			printf("Extend PCR %i (SHA-384) with digest { ", pcr_index);
+		}
 		print_response_buf(pcr_cmd_buf, pcr_cmd_buf_size, sizeof(tpm2_pcr_extend), PRINT_RESPONSE_CLEAR);
 		printf("}:\n");
+	} while (0);
+
+	return ret_val;
+}
+
+static int pcr_allocate(uint8_t *pcr_cmd_buf, hash_algo_enum hash_algo)
+{
+	int ret_val = EXIT_SUCCESS;	// Return value.
+	unsigned char set[] = {0xFF, 0xFF, 0xFF};
+	unsigned char clear[] = {0x00, 0x00, 0x00};
+
+	do
+	{
+		NULL_POINTER_CHECK(pcr_cmd_buf);
+
+		// Copy basic command bytes.
+		memcpy(pcr_cmd_buf, tpm2_pcr_allocate, sizeof(tpm2_pcr_allocate));
+
+		// Set hash algorithm depending on user input option at the correct byte index in the command byte stream.
+		if (ALG_SHA1 == hash_algo)
+		{
+			memcpy(pcr_cmd_buf + 34, set, sizeof(set));
+			memcpy(pcr_cmd_buf + 40, clear, sizeof(clear));
+			memcpy(pcr_cmd_buf + 46, clear, sizeof(clear));
+			printf("PCR allocate SHA-1 bank\n");
+		}
+		else if (ALG_SHA256 == hash_algo)
+		{
+			memcpy(pcr_cmd_buf + 34, clear, sizeof(clear));
+			memcpy(pcr_cmd_buf + 40, set, sizeof(set));
+			memcpy(pcr_cmd_buf + 46, clear, sizeof(clear));
+			printf("PCR allocate SHA-256 bank\n");
+		}
+		else if (ALG_SHA384 == hash_algo)
+		{
+			memcpy(pcr_cmd_buf + 34, clear, sizeof(clear));
+			memcpy(pcr_cmd_buf + 40, clear, sizeof(clear));
+			memcpy(pcr_cmd_buf + 46, set, sizeof(set));
+			printf("PCR allocate SHA-384 bank\n");
+		}
 	} while (0);
 
 	return ret_val;
@@ -1613,6 +1691,11 @@ static int pcr_read(char *pcr_index_str, uint8_t *pcr_cmd_buf, hash_algo_enum ha
 			memcpy(pcr_cmd_buf + 14, sha256_alg, sizeof(sha256_alg));
 			printf("Read PCR %i (SHA-256):\n", pcr_index);
 		}
+		else if (ALG_SHA384 == hash_algo)
+		{
+			memcpy(pcr_cmd_buf + 14, sha384_alg, sizeof(sha384_alg));
+			printf("Read PCR %i (SHA-384):\n", pcr_index);
+		}
 	} while (0);
 
 	return ret_val;
@@ -1652,7 +1735,7 @@ static int pcr_reset(char *pcr_index_str, uint8_t *pcr_cmd_buf)
 		// Store pcr_index at the correct byte index in the command byte stream.
 		pcr_cmd_buf[13] = pcr_index;
 
-		printf("Reset PCR %i (SHA-1 and SHA-256):\n", pcr_index);
+		printf("Reset PCR %i (SHA-1, SHA-256, and SHA-384):\n", pcr_index);
 	} while (0);
 
 	return ret_val;

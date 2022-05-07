@@ -80,6 +80,7 @@
 #define ERR_BAD_CMD			-2	///< Error code for a bad command line argument or option.
 #define TPM_SHA1_DIGEST_SIZE		20	///< For all SHA-1 operations the digest's size is always 20 bytes.
 #define TPM_SHA256_DIGEST_SIZE		32	///< For all SHA-256 operations the digest's size is always 32 bytes.
+#define TPM_SHA384_DIGEST_SIZE		48	///< For all SHA-384 operations the digest's size is always 48 bytes.
 #define TPM_CMD_HEADER_SIZE		10	///< The size of a standard TPM command header is 10 bytes.
 #define TPM_CMD_SIZE_OFFSET		2	///< The offset of a TPM command's size value is 2 bytes.
 #define HEX_BYTE_STRING_LENGTH		2	///< A byte can be represented by two hexadecimal characters.
@@ -142,13 +143,20 @@
 				{ \
 					hash_algo = ALG_SHA256; \
 				} \
+				else if (0 == strcasecmp(optarg, "sha384")) \
+				{ \
+					hash_algo = ALG_SHA384; \
+				} \
 				else \
 				{ \
 					ret_val = ERR_BAD_CMD; \
 					fprintf(stderr, "Unknown option. Use '-h' for more information.\n"); \
 					break; \
 				} \
-				optarg = argv[optind++]; \
+				if (argc > optind) \
+				{ \
+					optarg = argv[optind++]; \
+				} \
 			} \
 		} \
 		else \
@@ -164,6 +172,7 @@ typedef enum hash_algo_enum
 	ALG_NULL,
 	ALG_SHA1,
 	ALG_SHA256,
+	ALG_SHA384,
 } hash_algo_enum;
 
 //-------------"Methods"-------------
@@ -215,7 +224,8 @@ static int int_to_bytearray(uint64_t input, uint32_t input_size, uint8_t *output
   * @param	[in]	*pcr_digest_str		User input string of value to extend the selected PCR with.
   * @param	[out]	*pcr_cmd_buf		Return buffer for the complete command. Must be allocated by caller.
   * @param	[in]	*pcr_cmd_buf_size	Size of memory allocated at pcr_cmd_buf in bytes.
-  * @param	[in]	hash_algo		Set to ALG_SHA1 for extending with SHA-1 and to ALG_SHA256 for SHA-256.
+  * @param	[in]	hash_algo		Set to ALG_SHA1 for extending with SHA-1,
+						ALG_SHA256 for SHA-256, and ALG_SHA384 for SHA-384.
   * @return	One of the listed return codes.
   * @retval	EINVAL				In case of a NULL pointer or an invalid option.
   * @retval	EXIT_SUCCESS			In case of success.
@@ -226,10 +236,23 @@ static int int_to_bytearray(uint64_t input, uint32_t input_size, uint8_t *output
 static int pcr_extend(char *pcr_index_str, char *pcr_digest_str, uint8_t *pcr_cmd_buf, size_t pcr_cmd_buf_size, hash_algo_enum hash_algo);
 
 /**
+  * @brief	Create the PCR_Allocate command.
+  * @param	[out]	*pcr_cmd_buf		Return buffer for the complete command.
+  * @param	[in]	hash_algo		Set to ALG_SHA1 to allocate SHA-1,
+						ALG_SHA256 for SHA-256, and ALG_SHA384 for SHA-384.
+  * @return	One of the listed return codes.
+  * @retval	EINVAL				In case of a NULL pointer or an invalid option.
+  * @retval	EXIT_SUCCESS			In case of success.
+  * @date	2022/05/09
+  */
+static int pcr_allocate(uint8_t *pcr_cmd_buf, hash_algo_enum hash_algo);
+
+/**
   * @brief	Create the PCR_Read command.
   * @param	[in]	*pcr_index_str		User input string for PCR index.
   * @param	[out]	*pcr_cmd_buf		Return buffer for the complete command.
-  * @param	[in]	hash_algo		Set to ALG_SHA1 for reading with SHA-1 and to ALG_SHA256 for SHA-256.
+  * @param	[in]	hash_algo		Set to ALG_SHA1 for reading with SHA-1,
+						ALG_SHA256 for SHA-256, and ALG_SHA384 for SHA-384.
   * @return	One of the listed return codes.
   * @retval	EINVAL				In case of a NULL pointer or an invalid option.
   * @retval	EXIT_SUCCESS			In case of success.
@@ -355,7 +378,8 @@ static int get_random(char *data_length_string, uint8_t *response_buf);
 /**
   * @brief	Create the simple hash command.
   * @param	[in]	*data_string		User input string of data to be hashed.
-  * @param	[in]	hash_algo		Set to ALG_SHA1 for hashing with SHA-1 and to ALG_SHA256 for SHA-256.
+  * @param	[in]	hash_algo		Set to ALG_SHA1 for hashing with SHA-1,
+						ALG_SHA256 for SHA-256, and ALG_SHA384 for SHA-384.
   * @param	[out]	*hash_cmd_buf		Return buffer for the complete command.
   * @param	[in]	hash_cmd_buf_size	Return buffer size.
   * @return	One of the listed return codes.
@@ -370,7 +394,8 @@ static int create_hash(char *data_string, hash_algo_enum hash_algo, uint8_t *has
 /**
   * @brief	Create and transmit a sequence of TPM commands for hashing larger amounts of data.
   * @param	[in]	*data_string		User input string of data to be hashed.
-  * @param	[in]	hash_algo		Set to ALG_SHA1 for hashing with SHA-1 and to ALG_SHA256 for SHA-256.
+  * @param	[in]	hash_algo		Set to ALG_SHA1 for hashing with SHA-1,
+						ALG_SHA256 for SHA-256, and ALG_SHA384 for SHA-384.
   * @param	[out]	*tpm_response_buf	TPM response.
   * @param	[out]	*tpm_response_buf_size	Size of tpm_response_buf.
   * @return	One of the listed return codes or the error code stored in the global errno system variable.
@@ -538,11 +563,37 @@ static const uint8_t sha256_alg[] = {
 	0x00, 0x0B			// command for sha256 alg
 };
 
+static const uint8_t sha384_alg[] = {
+	0x00, 0x0C			// command for sha384 alg
+};
+
 static const uint8_t tpm_cc_hash_hierarchy[] = {
 	0x40, 0x00, 0x00, 0x07		// hierarchy of the ticket (TPM_RH_NULL)
 };
 
 //PCR_Command
+static const uint8_t tpm2_pcr_allocate[] = {
+	0x80, 0x02,			// TPM_ST_SESSIONS
+	0x00, 0x00, 0x00, 0x31,		// commandSize
+	0x00, 0x00, 0x01, 0x2B,		// TPM_CC_PCR_Allocate
+	0x40, 0x00, 0x00, 0x0C,		// TPM_RH_PLATFORM
+	0x00, 0x00,			// authSize (NULL Password)
+					// null (indicate a NULL Password)
+	0x00, 0x09,			// authSize (password authorization session)
+	0x40, 0x00, 0x00, 0x09,		// TPM_RS_PW (indicate a password authorization session)
+	0x00, 0x00, 0x01, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x03,		// count (TPML_PCR_SELECTION)
+	0x00, 0x04,			// hash (TPMS_PCR_SELECTION; SHA-1)
+	0x03,				// sizeofSelect (TPMS_PCR_SELECTION)
+	0x00, 0x00, 0x00,		// pcrSelect (TPMS_PCR_SELECTION; will be set later)
+	0x00, 0x0B,			// hash (TPMS_PCR_SELECTION; SHA-256)
+	0x03,				// sizeofSelect (TPMS_PCR_SELECTION)
+	0x00, 0x00, 0x00,		// pcrSelect (TPMS_PCR_SELECTION; will be set later)
+	0x00, 0x0C,			// hash (TPMS_PCR_SELECTION; SHA-384)
+	0x03,				// sizeofSelect (TPMS_PCR_SELECTION)
+	0x00, 0x00, 0x00		// pcrSelect (TPMS_PCR_SELECTION; will be set later)
+};
+
 static const uint8_t tpm2_pcr_read[] = {
 	0x80, 0x01,			// TPM_ST_NO_SESSIONS
 	0x00, 0x00, 0x00, 0x14,		// commandSize
