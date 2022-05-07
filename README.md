@@ -52,26 +52,30 @@ For getting an overview of the possible commands, run ./eltt2 -h
 
 Some options require the TPM to be in a specific state. This state is shown in brackets ("[]") behind each command line option in the list below:
 
-\[u\]: started
+\[-\]: none <br>
+\[*\]: the TPM platform hierarchy authorization value is not set (i.e., empty buffer) <br>
+\[l\]: the required PCR bank is allocated <br>
+\[u\]: started <br>
 
 To get the TPM into the required state, call ELTT2 with the corresponding commands ("x" for a state means that whether this state is required or not depends on the actual command or the command parameters sent eventually to the TPM).
 
  Command line option                                 | Explanation                                       | Precondition
  ---                                                 | ---                                               | ---
- -a \[hash algorithm\] \<data bytes\>                | Hash Sequence SHA-1/SHA-256 \[default: SHA-1\]    | \[u\]
+ -a \[hash algorithm\] \<data bytes\>                | Hash Sequence SHA-1/256/384 \[default: SHA-1\]    | \[u\]
  -A \<data bytes\>                                   | Hash Sequence SHA-256                             | \[u\]
  -b \<command bytes\>                                | Enter your own TPM command                        | \[u\]
  -c                                                  | Read Clock                                        | \[u\]
  -d \<shutdown type\>                                | Shutdown                                          | \[u\]
- -e \[hash algorithm\] \<PCR index\> \<PCR digest\>  | PCR Extend SHA-1/SHA-256 \[default: SHA-1\]       | \[u\]
- -E \<PCR index\> \<PCR digest\>                     | PCR Extend SHA-256                                | \[u\]
+ -e \[hash algorithm\] \<PCR index\> \<PCR digest\>  | PCR Extend SHA-1/256/384 \[default: SHA-1\]       | \[u\], \[l\]
+ -E \<PCR index\> \<PCR digest\>                     | PCR Extend SHA-256                                | \[u\], \[l\]
  -g                                                  | Get fixed capability values                       | \[u\]
  -v                                                  | Get variable capability values                    | \[u\]
  -G \<data length\>                                  | Get Random                                        | \[u\]
  -h                                                  | Help                                              | \[-\]
- -r \[hash algorithm\] \<PCR index\>                 | PCR Read SHA-1/SHA-256 \[default: SHA-1\]         | \[u\]
- -R \<PCR index\>                                    | PCR Read SHA-256                                  | \[u\]
- -s \[hash algorithm\] \<data bytes\>                | Hash SHA-1/SHA-256 \[default: SHA-1\]             | \[u\]
+ -l \<hash algorithm\>                               | PCR Allocate SHA-1/256/384                        | \[u\], \[*\]
+ -r \[hash algorithm\] \<PCR index\>                 | PCR Read SHA-1/256/384 \[default: SHA-1\]         | \[u\], \[l\]
+ -R \<PCR index\>                                    | PCR Read SHA-256                                  | \[u\], \[l\]
+ -s \[hash algorithm\] \<data bytes\>                | Hash SHA-1/256/384 \[default: SHA-1\]             | \[u\]
  -S \<data bytes\>                                   | Hash SHA-256                                      | \[u\]
  -t \<test type\>                                    | Self Test                                         | \[u\]
  -T                                                  | Get Test Result                                   | \[u\]
@@ -82,11 +86,12 @@ To get the TPM into the required state, call ELTT2 with the corresponding comman
  Additional information:
 
 -a: <br>
-With the "-a" command you can hash given data with the SHA-1/SHA-256 hash algorithm. This hash sequence sends 3 commands [start, update, complete] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
+With the "-a" command you can hash given data with the SHA-1/256/384 hash algorithm. This hash sequence sends 3 commands [start, update, complete] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
 ./eltt2 -a 41624364 Hash given data with SHA-1 hash algorithm. <br>
 or <br>
 ./eltt2 -a sha1 41624364 Hash given data with SHA-1 hash algorithm. <br>
 ./eltt2 -a sha256 41624364 Hash given data with SHA-256 hash algorithm. <br>
+./eltt2 -a sha384 41624364 Hash given data with SHA-384 hash algorithm. <br>
 
 -A: <br>
 With the "-A" command you can hash given data with the SHA-256 hash algorithm. This hash sequence sends 3 commands [start, update, complete] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
@@ -107,11 +112,12 @@ or <br>
 ./eltt2 -d state    send a TPM2_Shutdown command with shutdown type STATE to the TPM. <br>
 
  -e: <br>
- With the "-e" command you can extend bytes in the selected PCR with SHA-1/SHA-256. To do so, you have to enter the index of PCR in hexadecimal that you like to extend and the digest you want to extend the selected PCR with. Note that you can only extend PCRs with index 0 to 16 and PCR 23 and that the digest must have a length of 20/32 bytes (will be padded with 0 if necessary). The TPM then builds an SHA-1/SHA-256 hash over the PCR data in the selected PCR and the digest you provided and writes the result back to the selected PCR. For example, use the following command to extend PCR 23 (0x17) with the byte sequence {0x41, 0x62, 0x43, 0x64, 0x00, ... (will be filled with 0x00)}: <br>
+ With the "-e" command you can extend bytes in the selected PCR with SHA-1/256/384. To do so, you have to enter the index of PCR in hexadecimal that you like to extend and the digest you want to extend the selected PCR with. Note that you can only extend PCRs with index 0 to 16 and PCR 23 and that the digest must have a length of 20/32/48 bytes (will be padded with 0 if necessary). The TPM then builds an SHA-1/256/384 hash over the PCR data in the selected PCR and the digest you provided and writes the result back to the selected PCR. For example, use the following command to extend PCR 23 (0x17) with the byte sequence {0x41, 0x62, 0x43, 0x64, 0x00, ... (will be filled with 0x00)}: <br>
 ./eltt2 -e 17 41624364 Extend bytes in PCR 23 with SHA-1. <br>
 or <br>
 ./eltt2 -e sha1 17 41624364 Extend bytes in PCR 23 with SHA-1. <br>
 ./eltt2 -e sha256 17 41624364 Extend bytes in PCR 23 with SHA-256. <br>
+./eltt2 -e sha384 17 41624364 Extend bytes in PCR 23 with SHA-384. <br>
 
 -E: <br>
 With the "-E" command you can extend bytes in the selected PCR with SHA-256. To do so, you have to enter the index of PCR in hexadecimal that you like to extend and the digest you want to extend the selected PCR with. Note that you can only extend PCRs with index 0 to 16 and PCR 23 and that the digest must have a length of 32 bytes (will be padded with 0 if necessary). The TPM then builds an SHA-256 hash over the PCR data in the selected PCR and the digest you provided and writes the result back to the selected PCR. For example, use the following command to extend PCR 23 (0x17) with the byte sequence {0x41, 0x62, 0x43, 0x64, 0x00, ... (will be filled with 0x00)}: <br>
@@ -127,23 +133,31 @@ With the "-v" command you can read the TPM's variable properties.
 With the "-G" command you can get a given amount of random bytes. Note that you can only request a maximum amount of 32 random bytes at once. For example, use the following command to get 20 (0x14) random bytes: <br>
  ./eltt2 -G 14
 
+-l: <br>
+With the "-l" command you can allocate the SHA-1/256/384 PCR bank. Take note of two things. Firstly, the command requires a platform authorization value and it is set to an empty buffer; hence the command cannot be used if the TPM platform authorization value is set (e.g., by UEFI). Secondly, when the command is executed successfully a TPM reset has to follow for it to take effect. For example, use the following command to allocate a PCR bank: <br>
+./eltt2 -l sha1 Allocate SHA-1 PCR bank. <br>
+./eltt2 -l sha256 Allocate SHA-256 PCR bank. <br>
+./eltt2 -l sha384 Allocate SHA-384 PCR bank. <br>
+
 -r: <br>
-With the "-r" command you can read data from a selected SHA-1/SHA-256 PCR. For example, use the following command to read data from PCR 23 (0x17): <br>
+With the "-r" command you can read data from a selected SHA-1/256/384 PCR. For example, use the following command to read data from PCR 23 (0x17): <br>
 ./eltt2 -r 17 Read data from SHA-1 PCR 23. <br>
 or <br>
 ./eltt2 -r sha1 17 Read data from SHA-1 PCR 23. <br>
 ./eltt2 -r sha256 17 Read data from SHA-256 PCR 23. <br>
+./eltt2 -r sha384 17 Read data from SHA-384 PCR 23. <br>
 
 -R: <br>
 With the "-R" command you can read data from a selected SHA-256 PCR. For example, use the following command to read data from PCR 23 (0x17): <br>
  ./eltt2 -R 17
 
 -s: <br>
-With the "-s" command you can hash given data with the SHA-1/SHA-256 hash algorithm. This command only allows a limited amount of data to be hashed (depending on the TPM's maximum input buffer size). For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
+With the "-s" command you can hash given data with the SHA-1/256/384 hash algorithm. This command only allows a limited amount of data to be hashed (depending on the TPM's maximum input buffer size). For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
 ./eltt2 -s 41624364 Hash given data with SHA-1 hash algorithm. <br>
 or <br>
 ./eltt2 -s sha1 41624364 Hash given data with SHA-1 hash algorithm. <br>
 ./eltt2 -s sha256 41624364 Hash given data with SHA-256 hash algorithm. <br>
+./eltt2 -s sha384 41624364 Hash given data with SHA-384 hash algorithm. <br>
 
 -S: <br>
 With the "-S" command you can hash given data with the SHA-256 hash algorithm. This command only allows a limited amount of data to be hashed (depending on the TPM input buffer size). For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
