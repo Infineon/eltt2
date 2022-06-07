@@ -28,8 +28,8 @@ A TPM 2.0 evaluation board can be ordered in the [Hitex Webshop](https://www.ehi
 </p>
 
 In order to execute ELTT2, you need to compile it first:
- 1. Switch to the directory with the ELTT2 source code
- 2. Compile the source code by typing the following command:
+1. Switch to the directory with the ELTT2 source code
+2. Compile the source code by typing the following command:
     make
 
 Due to hardware (and thus TPM) access restrictions for normal users, ELTT2 requires root (aka superuser or administrator) privileges. They can be obtained e.g. by using the 'sudo' command on Debian Linux derivates.
@@ -86,7 +86,7 @@ To get the TPM into the required state, call ELTT2 with the corresponding comman
  Additional information:
 
 `-a`: <br>
-With the "-a" command you can hash given data with the SHA-1/256/384 hash algorithm. This hash sequence sends 3 commands [start, update, complete] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
+With the "-a" command you can hash given data with the SHA-1/256/384 hash algorithm. This hash sequence sends 3 commands \[start, update, complete\] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
 `./eltt2 -a 41624364` Hash given data with SHA-1 hash algorithm. <br>
 or <br>
 `./eltt2 -a sha1 41624364` Hash given data with SHA-1 hash algorithm. <br>
@@ -94,7 +94,7 @@ or <br>
 `./eltt2 -a sha384 41624364` Hash given data with SHA-384 hash algorithm. <br>
 
 `-A`: <br>
-With the "-A" command you can hash given data with the SHA-256 hash algorithm. This hash sequence sends 3 commands [start, update, complete] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
+With the "-A" command you can hash given data with the SHA-256 hash algorithm. This hash sequence sends 3 commands \[start, update, complete\] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
 `./eltt2 -A 41624364`
 
 `-b`: <br>
@@ -197,7 +197,7 @@ If you have any questions or problems, please read the section "FAQ and
 Troubleshooting" in this document.
 In case you still have questions, contact your local Infineon
 Representative.
-Further information is available at https://www.infineon.com/tpm.
+Further information is available at <https://www.infineon.com/tpm>.
 
 
 # 4. FAQ and Troubleshooting
