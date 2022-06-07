@@ -951,7 +951,7 @@ static int print_capability_flags(uint8_t *response_buf, uint8_t cap_selector)
 						tmp = ((propertyValue & (1<<2)) == 0? 0:1); // Check bit 2 value.
 						printf("Eh Enable:                      %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 						//bit 30:3 = reserved
-						tmp = ((propertyValue & (1<<31)) == 0? 0:1); // Check bit 31 value.
+						tmp = ((propertyValue & (1U<<31)) == 0? 0:1); // Check bit 31 value.
 						printf("Orderly:                        %i %s", (tmp), ((tmp)? "SET\n" : "CLEAR\n"));
 						break;
 					default:
