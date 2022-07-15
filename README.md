@@ -1,5 +1,5 @@
 # ELTT2 - Infineon Embedded Linux TPM Toolbox 2 for TPM 2.0
- 
+
 
 All information in this document is Copyright (c) 2014-2022, Infineon Technologies AG <br>
 All rights reserved.
@@ -61,29 +61,30 @@ To get the TPM into the required state, call ELTT2 with the corresponding comman
 
  Command line option                                 | Explanation                                       | Precondition
  ---                                                 | ---                                               | ---
- `-a [hash algorithm] <data bytes>`                  | Hash Sequence SHA-1/256/384 \[default: SHA-1\]    | \[u\]
- `-A <data bytes>`                                   | Hash Sequence SHA-256                             | \[u\]
- `-b <command bytes>`                                | Enter your own TPM command                        | \[u\]
- `-c`                                                | Read Clock                                        | \[u\]
- `-d <shutdown type>`                                | Shutdown                                          | \[u\]
- `-e [hash algorithm] <PCR index> <PCR digest>`      | PCR Extend SHA-1/256/384 \[default: SHA-1\]       | \[u\], \[l\]
- `-E <PCR index> <PCR digest>`                       | PCR Extend SHA-256                                | \[u\], \[l\]
- `-g`                                                | Get fixed capability values                       | \[u\]
- `-v`                                                | Get variable capability values                    | \[u\]
- `-G <data length>`                                  | Get Random                                        | \[u\]
- `-h`                                                | Help                                              | \[-\]
- `-l <hash algorithm>`                               | PCR Allocate SHA-1/256/384                        | \[u\], \[\*\]
- `-r [hash algorithm] <PCR index>`                   | PCR Read SHA-1/256/384 \[default: SHA-1\]         | \[u\], \[l\]
- `-R <PCR index>`                                    | PCR Read SHA-256                                  | \[u\], \[l\]
- `-s [hash algorithm] <data bytes>`                  | Hash SHA-1/256/384 \[default: SHA-1\]             | \[u\]
- `-S <data bytes>`                                   | Hash SHA-256                                      | \[u\]
- `-t <test type>`                                    | Self Test                                         | \[u\]
- `-T`                                                | Get Test Result                                   | \[u\]
- `-u <startup type>`                                 | Startup                                           | \[-\]
- `-z <PCR index>`                                    | PCR Reset                                         | \[u\]
+ `-a, --hashsequence-start [hash algorithm] <data bytes>`                  | Hash Sequence SHA-1/256/384 \[default: SHA-1\]    | \[u\]
+ `-A, --hashsequence-start-sha256 <data bytes>`                                   | Hash Sequence SHA-256                             | \[u\]
+ `-b, --enter-own-command <command bytes>`                                | Enter your own TPM command                        | \[u\]
+ `-c, --read-clock`                                                | Read Clock                                        | \[u\]
+ `-d, --shutdown <shutdown type>`                                | Shutdown                                          | \[u\]
+ `-e, --pcr-extend [hash algorithm] <PCR index> <PCR digest>`      | PCR Extend SHA-1/256/384 \[default: SHA-1\]       | \[u\], \[l\]
+ `-E, --pcr-extend-sha256 <PCR index> <PCR digest>`                       | PCR Extend SHA-256                                | \[u\], \[l\]
+ `-g, --getcap-fixed`                                                | Get fixed capability values                       | \[u\]
+ `-v, --getcap-var`                                                | Get variable capability values                    | \[u\]
+ `-G, --get-random <data length>`                                  | Get Random                                        | \[u\]
+ `-h, --help`                                                | Help                                              | \[-\]
+ `-l, --pcr-allocate <hash algorithm>`                               | PCR Allocate SHA-1/256/384                        | \[u\], \[\*\]
+ `-r, --pcr-read [hash algorithm] <PCR index>`                   | PCR Read SHA-1/256/384 \[default: SHA-1\]         | \[u\], \[l\]
+ `-R, --pcr-read-sha256 <PCR index>`                                    | PCR Read SHA-256                                  | \[u\], \[l\]
+ `-s, --hash [hash algorithm] <data bytes>`                  | Hash SHA-1/256/384 \[default: SHA-1\]             | \[u\]
+ `-S, --hash-sha256 <data bytes>`                                   | Hash SHA-256                                      | \[u\]
+ `-t, --seltftest <test type>`                                    | Self Test                                         | \[u\]
+ `-T, --get-testresult`                                                | Get Test Result                                   | \[u\]
+ `-u, --startup <startup type>`                                 | Startup                                           | \[-\]
+ `-z, --pcr-reset <PCR index>`                                    | PCR Reset                                         | \[u\]
 
 
- Additional information:
+ Additional information: <br>
+In this section, only short command line parameters are shown. But long ones can equally be used, e.g. `./eltt2 --hashsequence-start=sha256 41624364` can be used for `./eltt2 -a sha256 41624364`.
 
 `-a`: <br>
 With the "-a" command you can hash given data with the SHA-1/256/384 hash algorithm. This hash sequence sends 3 commands \[start, update, complete\] to the TPM and allows to hash an arbitrary amount of data. For example, use the following command to hash the byte sequence {0x41, 0x62, 0x43, 0x64}: <br>
@@ -102,7 +103,7 @@ With the "-b" command you can enter your own TPM command bytes and read the TPM 
  `./eltt2 -b 80010000000C000001440000`
 
 `-c`: <br>
-With the "-c" command you can read the clock values of the TPM. 
+With the "-c" command you can read the clock values of the TPM.
 
 `-d`: <br>
 With the "-d" command you can issue a TPM shutdown. It has 2 options: <br>
@@ -169,7 +170,7 @@ With the "-t" command you can issue a TPM selftest. It has 3 options: <br>
 or<br>
 `./eltt2 -t not_full` Perform a partial TPM2_Selftest to test previously untested TPM capabilities. <br>
 `./eltt2 -t full` Perform a full TPM2_Selftest to test all TPM capabilities. <br>
-`./eltt2 -t incremental`  Perform a test of selected algorithms. 
+`./eltt2 -t incremental`  Perform a test of selected algorithms.
 
 `-T`: <br>
 With the "-T" command you can read the results of a previously run selftest.
