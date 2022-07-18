@@ -59,6 +59,33 @@ int main(int argc, char **argv)
 	int no_transmission = 0;		// Flag to skip the transmission call, e.g. in case of command line option -h.
 	int tpm_error = 0;			// Flag to indicate whether a TPM response has returned a TPM error code or not.
 	hash_algo_enum hash_algo = ALG_NULL;	// Variable to indicate the selected hash algorithm.
+	int option_index = -1; // Variable to indicate the option index stored by getopt_long
+
+	// Define possible command line options
+	static const struct option commandline_options[] =
+	{
+		{"hashsequence-start", required_argument, 0, 'a'},
+		{"hashsequence-start-sha256", required_argument, 0, 'A'},
+		{"enter-own-command", required_argument, 0, 'b'},
+		{"read-clock", no_argument, 0, 'c'},
+		{"shutdown", required_argument, 0, 'd'},
+		{"pcr-extend", required_argument, 0, 'e'},
+		{"pcr-extend-sha256", required_argument, 0, 'E'},
+		{"getcap-fixed", no_argument, 0, 'g'},
+		{"getcap-var", no_argument, 0, 'v'},
+		{"get-random", required_argument, 0, 'G'},
+		{"help", no_argument, 0, 'h'},
+		{"pcr-allocate", required_argument, 0, 'l'},
+		{"pcr-read", required_argument, 0, 'r'},
+		{"pcr-read-sha256", required_argument, 0, 'R'},
+		{"hash", required_argument, 0, 's'},
+		{"hash-sha256", required_argument, 0, 'S'},
+		{"seltftest", required_argument, 0, 't'},
+		{"get-testresult", no_argument, 0, 'T'},
+		{"startup", required_argument, 0, 'u'},
+		{"pcr-reset", required_argument, 0, 'z'},
+		{0, 0, 0, 0}
+	};
 
 	// ---------- Program flow ----------
 	printf("\n");
@@ -81,8 +108,8 @@ int main(int argc, char **argv)
 		// ---------- Command line parsing with getopt ----------
 		opterr = 0; // Disable getopt error messages in case of unknown parameters; we want to use our own error messages.
 
-		// Loop through parameters with getopt.
-		while (-1 != (option = getopt(argc, argv, "cgvhTa:A:b:d:e:E:G:l:r:R:s:S:t:u:z:")))
+		// Loop through parameters with getopt_long.
+		while (-1 != (option = getopt_long(argc, argv, "cgvhTa:A:b:d:e:E:G:l:r:R:s:S:t:u:z:", commandline_options, &option_index)))
 		{
 			switch (option)
 			{
@@ -745,46 +772,46 @@ static int print_response_buf(uint8_t *response_buf, size_t resp_size, uint32_t 
 
 static void print_help()
 {
-	printf("'-a [hash algorithm] <data bytes>': Hash Sequence SHA-1/256/384 [default: SHA-1]\n");
+	printf("'-a, --hashsequence-start [hash algorithm] <data bytes>': Hash Sequence SHA-1/256/384 [default: SHA-1]\n");
 	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256', 'sha384'\n");
 	printf("           Data bytes: Enter a byte sequence like '0F56...' for {0x0f, 0x56, ...}\n");
-	printf("'-A <data bytes>': Hash Sequence SHA-256\n");
+	printf("'-A, --hashsequence-start-sha256 <data bytes>': Hash Sequence SHA-256\n");
 	printf("        -> Data bytes: Enter a byte sequence like '0F56...' for {0x0f, 0x56, ...}\n");
-	printf("'-b <command bytes>': Enter your own TPM command\n");
+	printf("'-b, --enter-own-command <command bytes>': Enter your own TPM command\n");
 	printf("        -> Command bytes: Enter your command bytes in hex like '0f56...' for {0x0f, 0x56, ...}\n");
-	printf("'-c': Read Clock\n");
-	printf("'-d <shutdown type>': Shutdown\n");
+	printf("'-c, --read-clock': Read Clock\n");
+	printf("'-d, --shutdown <shutdown type>': Shutdown\n");
 	printf("        -> Shutdown types: clear [default], state\n");
-	printf("'-e [hash algorithm] <PCR index> <PCR digest>': PCR Extend SHA-1/256/384 [default: SHA-1]\n");
+	printf("'-e, --pcr-extend [hash algorithm] <PCR index> <PCR digest>': PCR Extend SHA-1/256/384 [default: SHA-1]\n");
 	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256', 'sha384'\n");
 	printf("           PCR index:  Enter the PCR index in hex like '17' for 0x17\n");
 	printf("           PCR digest: Enter the value to extend the PCR with in hex like '0f56...' for {0x0f, 0x56, ...}\n");
-	printf("'-E <PCR index> <PCR digest>': PCR Extend SHA-256\n");
+	printf("'-E, --pcr-extend-sha256 <PCR index> <PCR digest>': PCR Extend SHA-256\n");
 	printf("        -> PCR index:  Enter the PCR index in hex like '17' for 0x17\n");
 	printf("           PCR digest: Enter the value to extend the PCR with in hex like '0f56...' for {0x0f, 0x56, ...}\n");
-	printf("'-g': Get fixed capability values\n");
-	printf("'-v': Get variable capability values\n");
-	printf("'-G <byte count>': Get Random\n");
+	printf("'-g, --getcap-fixed': Get fixed capability values\n");
+	printf("'-v, --getcap-var': Get variable capability values\n");
+	printf("'-G, --get-random <byte count>': Get Random\n");
 	printf("        -> Enter desired number of random bytes in hex like '20' for 0x20 (=32 bytes, maximum)\n");
-	printf("'-h': Help\n");
-	printf("'-l <hash algorithm>': PCR allocate SHA-1/256/384\n");
+	printf("'-h, --help': Help\n");
+	printf("'-l, --pcr-allocate <hash algorithm>': PCR allocate SHA-1/256/384\n");
 	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256', 'sha384'\n");
-	printf("'-r [hash algorithm] <PCR index>': PCR Read SHA-1/256/384 [default: SHA-1]\n");
+	printf("'-r, --pcr-read [hash algorithm] <PCR index>': PCR Read SHA-1/256/384 [default: SHA-1]\n");
 	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256', 'sha384'\n");
 	printf("           PCR index: Enter PCR number in hex like '17' for 0x17\n");
-	printf("'-R <PCR index>': PCR Read SHA-256\n");
+	printf("'-R, --pcr-read-sha256 <PCR index>': PCR Read SHA-256\n");
 	printf("        -> PCR index: Enter PCR number in hex like '17' for 0x17\n");
-	printf("'-s [hash algorithm] <data bytes>': Hash SHA-1/256/384 [default: SHA-1]\n");
+	printf("'-s, --hash [hash algorithm] <data bytes>': Hash SHA-1/256/384 [default: SHA-1]\n");
 	printf("        -> Hash algorithm: Enter hash algorithm like 'sha1', 'sha256', 'sha384'\n");
 	printf("           Data bytes: Enter a byte sequence like '0F56...' for {0x0f, 0x56, ...}\n");
-	printf("'-S <data bytes>': Hash SHA-256\n");
+	printf("'-S, --hash-sha256 <data bytes>': Hash SHA-256\n");
 	printf("        -> Data bytes: Enter a byte sequence like '0F56...' for {0x0f, 0x56, ...}\n");
-	printf("'-t <selftest type>': SelfTest\n");
+	printf("'-t, --seltftest <selftest type>': SelfTest\n");
 	printf("        -> Selftest type: not_full [default], full, incremental\n");
-	printf("'-T': Get Test Result\n");
-	printf("'-u <startup type>': Startup\n");
+	printf("'-T, --get-testresult': Get Test Result\n");
+	printf("'-u, --startup <startup type>': Startup\n");
 	printf("        -> Startup types: clear [default], state\n");
-	printf("'-z <PCR index>': PCR Reset SHA-1, SHA-256, and SHA-384\n");
+	printf("'-z, --pcr-reset <PCR index>': PCR Reset SHA-1, SHA-256, and SHA-384\n");
 	printf("        -> PCR index: Enter PCR number in hex like '17' for 0x17\n");
 }
 
