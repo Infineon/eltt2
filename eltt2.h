@@ -85,7 +85,7 @@
 #define TPM_CMD_SIZE_OFFSET		2	///< The offset of a TPM command's size value is 2 bytes.
 #define HEX_BYTE_STRING_LENGTH		2	///< A byte can be represented by two hexadecimal characters.
 #ifndef INT_MAX
-#define INT_MAX 0x7FFFFFF			///< The maximum value of a signed 32-bit integer.
+#define INT_MAX 0x7FFFFFFF			///< The maximum value of a signed 32-bit integer.
 #endif
 // TPM Return codes
 #define TPM_RC_SUCCESS			0x00000000	///< The response error code for TPM_SUCCESS.
