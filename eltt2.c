@@ -425,25 +425,25 @@ int tpmtool_transmit(const uint8_t *buf, ssize_t length, uint8_t *response, ssiz
 		if (0 >= length)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter 'length' must be larger than 0.");
+			fprintf(stderr, "Bad parameter. Value of parameter 'length' must be larger than 0.\n");
 			break;
 		}
 		if (TPM_REQ_MAX_SIZE < length)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter 'length' must be smaller than or equal to %u.", TPM_REQ_MAX_SIZE);
+			fprintf(stderr, "Bad parameter. Value of parameter 'length' must be smaller than or equal to %u.\n", TPM_REQ_MAX_SIZE);
 			break;
 		}
 		if (TPM_CMD_HEADER_SIZE >= *resp_length)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter '*resp_length' must be at least %u.", TPM_CMD_HEADER_SIZE);
+			fprintf(stderr, "Bad parameter. Value of parameter '*resp_length' must be at least %u.\n", TPM_CMD_HEADER_SIZE);
 			break;
 		}
 		if (TPM_RESP_MAX_SIZE < *resp_length)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter '*resp_length' must be smaller than or equal to %u.", TPM_RESP_MAX_SIZE);
+			fprintf(stderr, "Bad parameter. Value of parameter '*resp_length' must be smaller than or equal to %u.\n", TPM_RESP_MAX_SIZE);
 			break;
 		}
 
@@ -555,7 +555,7 @@ static int response_print(uint8_t *response_buf, size_t resp_size, int option)
 		if (0 >= resp_size)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter 'resp_size' must be larger than 0.");
+			fprintf(stderr, "Bad parameter. Value of parameter 'resp_size' must be larger than 0.\n");
 			break;
 		}
 		if (TPM_RESP_MAX_SIZE < resp_size)
@@ -644,7 +644,7 @@ static int print_response_buf(uint8_t *response_buf, size_t resp_size, uint32_t 
 		if (0 >= resp_size)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter 'resp_size' must be larger than 0.");
+			fprintf(stderr, "Bad parameter. Value of parameter 'resp_size' must be larger than 0.\n");
 			break;
 		}
 		if (TPM_RESP_MAX_SIZE < resp_size)
