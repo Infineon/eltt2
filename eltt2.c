@@ -89,6 +89,7 @@ int main(int argc, char **argv)
 				case 'a': // TPM2_HashSequenceStart SHA-1/256/384
 				case 'A': // TPM2_HashSequenceStart SHA-256
 					HASH_ALG_PARSER('a', 3);
+					RET_VAL_CHECK(ret_val);
 
 					ret_val = create_hash_sequence(optarg, hash_algo, tpm_response_buf, &tpm_response_buf_size);
 					break;
@@ -141,6 +142,7 @@ int main(int argc, char **argv)
 					}
 
 					HASH_ALG_PARSER('e', 4);
+					RET_VAL_CHECK(ret_val);
 
 					// Allocate the input buffer for pcr_extend and tpmtool_transmit.
 					if (ALG_SHA1 == hash_algo)
@@ -202,6 +204,7 @@ int main(int argc, char **argv)
 
 				case 'l': // PCR_Allocate SHA-1/256/384
 					HASH_ALG_PARSER('l', -1);
+					RET_VAL_CHECK(ret_val);
 
 					// Allocate the input buffer for pcr_read and tpmtool_transmit.
 					input_bytes_size = sizeof(tpm2_pcr_allocate);
@@ -220,6 +223,7 @@ int main(int argc, char **argv)
 				case 'r': // PCR_Read SHA-1/256/384
 				case 'R': // PCR_Read SHA-256
 					HASH_ALG_PARSER('r', 3);
+					RET_VAL_CHECK(ret_val);
 
 					// Allocate the input buffer for pcr_read and tpmtool_transmit.
 					input_bytes_size = sizeof(tpm2_pcr_read);
@@ -238,6 +242,7 @@ int main(int argc, char **argv)
 				case 's': // Hash SHA-1/256/384
 				case 'S': // Hash SHA-256
 					HASH_ALG_PARSER('s', 3);
+					RET_VAL_CHECK(ret_val);
 
 					// Allocate the input buffer for create_hash and tpmtool_transmit.
 					input_bytes_size = strlen(optarg) / HEX_BYTE_STRING_LENGTH + strlen(optarg) % HEX_BYTE_STRING_LENGTH + sizeof(tpm2_hash);
