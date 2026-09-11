@@ -1,8 +1,8 @@
 # Makefile for Embedded Linux TPM Toolbox 2 (ELTT2)
 # Copyright (c) Infineon Technologies AG
 
-CC=gcc
-CFLAGS=-Wall -Wextra -std=c99 -g
+CC ?= gcc
+CFLAGS ?= -Wall -Wextra -std=c99 -g
 
 all: eltt2
 
