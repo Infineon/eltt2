@@ -89,6 +89,7 @@ int main(int argc, char **argv)
 				case 'a': // TPM2_HashSequenceStart SHA-1/256/384
 				case 'A': // TPM2_HashSequenceStart SHA-256
 					HASH_ALG_PARSER('a', 3);
+					RET_VAL_CHECK(ret_val);
 
 					ret_val = create_hash_sequence(optarg, hash_algo, tpm_response_buf, &tpm_response_buf_size);
 					break;
@@ -141,6 +142,7 @@ int main(int argc, char **argv)
 					}
 
 					HASH_ALG_PARSER('e', 4);
+					RET_VAL_CHECK(ret_val);
 
 					// Allocate the input buffer for pcr_extend and tpmtool_transmit.
 					if (ALG_SHA1 == hash_algo)
@@ -202,6 +204,7 @@ int main(int argc, char **argv)
 
 				case 'l': // PCR_Allocate SHA-1/256/384
 					HASH_ALG_PARSER('l', -1);
+					RET_VAL_CHECK(ret_val);
 
 					// Allocate the input buffer for pcr_read and tpmtool_transmit.
 					input_bytes_size = sizeof(tpm2_pcr_allocate);
@@ -220,6 +223,7 @@ int main(int argc, char **argv)
 				case 'r': // PCR_Read SHA-1/256/384
 				case 'R': // PCR_Read SHA-256
 					HASH_ALG_PARSER('r', 3);
+					RET_VAL_CHECK(ret_val);
 
 					// Allocate the input buffer for pcr_read and tpmtool_transmit.
 					input_bytes_size = sizeof(tpm2_pcr_read);
@@ -238,6 +242,7 @@ int main(int argc, char **argv)
 				case 's': // Hash SHA-1/256/384
 				case 'S': // Hash SHA-256
 					HASH_ALG_PARSER('s', 3);
+					RET_VAL_CHECK(ret_val);
 
 					// Allocate the input buffer for create_hash and tpmtool_transmit.
 					input_bytes_size = strlen(optarg) / HEX_BYTE_STRING_LENGTH + strlen(optarg) % HEX_BYTE_STRING_LENGTH + sizeof(tpm2_hash);
@@ -425,25 +430,25 @@ int tpmtool_transmit(const uint8_t *buf, ssize_t length, uint8_t *response, ssiz
 		if (0 >= length)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter 'length' must be larger than 0.");
+			fprintf(stderr, "Bad parameter. Value of parameter 'length' must be larger than 0.\n");
 			break;
 		}
 		if (TPM_REQ_MAX_SIZE < length)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter 'length' must be smaller than or equal to %u.", TPM_REQ_MAX_SIZE);
+			fprintf(stderr, "Bad parameter. Value of parameter 'length' must be smaller than or equal to %u.\n", TPM_REQ_MAX_SIZE);
 			break;
 		}
 		if (TPM_CMD_HEADER_SIZE >= *resp_length)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter '*resp_length' must be at least %u.", TPM_CMD_HEADER_SIZE);
+			fprintf(stderr, "Bad parameter. Value of parameter '*resp_length' must be at least %u.\n", TPM_CMD_HEADER_SIZE);
 			break;
 		}
 		if (TPM_RESP_MAX_SIZE < *resp_length)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter '*resp_length' must be smaller than or equal to %u.", TPM_RESP_MAX_SIZE);
+			fprintf(stderr, "Bad parameter. Value of parameter '*resp_length' must be smaller than or equal to %u.\n", TPM_RESP_MAX_SIZE);
 			break;
 		}
 
@@ -555,7 +560,7 @@ static int response_print(uint8_t *response_buf, size_t resp_size, int option)
 		if (0 >= resp_size)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter 'resp_size' must be larger than 0.");
+			fprintf(stderr, "Bad parameter. Value of parameter 'resp_size' must be larger than 0.\n");
 			break;
 		}
 		if (TPM_RESP_MAX_SIZE < resp_size)
@@ -644,7 +649,7 @@ static int print_response_buf(uint8_t *response_buf, size_t resp_size, uint32_t 
 		if (0 >= resp_size)
 		{
 			ret_val = EINVAL;
-			fprintf(stderr, "Bad parameter. Value of parameter 'resp_size' must be larger than 0.");
+			fprintf(stderr, "Bad parameter. Value of parameter 'resp_size' must be larger than 0.\n");
 			break;
 		}
 		if (TPM_RESP_MAX_SIZE < resp_size)
