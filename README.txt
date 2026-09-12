@@ -98,7 +98,7 @@ Contents:
     Some options require the TPM to be in a specific state. This state is shown
     in brackets ("[]") behind each command line option in the list below:
 
-    [-]: none 
+    [-]: none
     [*]: the TPM platform hierarchy authorization value is not set (i.e., empty buffer)
     [l]: the required PCR bank is allocated
     [u]: started
@@ -111,49 +111,49 @@ Contents:
 
     Command line options:                                                                          Preconditions:
 
-    -a [hash algorithm] <data bytes>: Hash Sequence SHA-1/256/384 [default: SHA-1]                 [u]
+    -a, --hashsequence-start [hash algorithm] <data bytes>: Hash Sequence SHA-1/256/384 [default: SHA-1]                 [u]
 
-    -A <data bytes>: Hash Sequence SHA-256                                                         [u]
+    -A, --hashsequence-start-sha256 <data bytes>: Hash Sequence SHA-256                                                         [u]
 
-    -b <command bytes>: Enter your own TPM command                                                 [u]
+    -b, --enter-own-command <command bytes>: Enter your own TPM command                                                 [u]
 
-    -c: Read Clock                                                                                 [u]
+    -c, --read-clock: Read Clock                                                                                 [u]
 
-    -d <shutdown type>: Shutdown                                                                   [u]
+    -d, --shutdown <shutdown type>: Shutdown                                                                   [u]
 
-    -e [hash algorithm] <PCR index> <PCR digest>: PCR Extend SHA-1/256/384 [default: SHA-1]        [u], [l]
+    -e, --pcr-extend [hash algorithm] <PCR index> <PCR digest>: PCR Extend SHA-1/256/384 [default: SHA-1]        [u], [l]
 
-    -E <PCR index> <PCR digest>: PCR Extend SHA-256                                                [u], [l]
+    -E, --pcr-extend-sha256 <PCR index> <PCR digest>: PCR Extend SHA-256                                                [u], [l]
 
-    -g: Get fixed capability values                                                                [u]
+    -g, --getcap-fixed: Get fixed capability values                                                                [u]
 
-    -v: Get variable capability values                                                             [u]
+    -v, --getcap-var: Get variable capability values                                                             [u]
 
-    -G <data length>: Get Random                                                                   [u]
+    -G, --get-random <data length>: Get Random                                                                   [u]
 
-    -h: Help                                                                                       [-]
+    -h, --help: Help                                                                                       [-]
 
-    -l <hash algorithm>: PCR Allocate SHA-1/256/384                                                [u], [*]
+    -l, --pcr-allocate <hash algorithm>: PCR Allocate SHA-1/256/384                                                [u], [*]
 
-    -r [hash algorithm] <PCR index>: PCR Read SHA-1/256/384 [default: SHA-1]                       [u], [l]
+    -r, --pcr-read [hash algorithm] <PCR index>: PCR Read SHA-1/256/384 [default: SHA-1]                       [u], [l]
 
-    -R <PCR index>: PCR Read SHA-256                                                               [u], [l]
+    -R, --pcr-read-sha256 <PCR index>: PCR Read SHA-256                                                               [u], [l]
 
-    -s [hash algorithm] <data bytes>: Hash SHA-1/SHA256 [default: SHA-1]                           [u]
+    -s, --hash [hash algorithm] <data bytes>: Hash SHA-1/SHA256 [default: SHA-1]                           [u]
 
-    -S <data bytes>: Hash SHA-256                                                                  [u]
+    -S, --hash-sha256 <data bytes>: Hash SHA-256                                                                  [u]
 
-    -t <test type>: Self Test                                                                      [u]
+    -t, --seltftest <test type>: Self Test                                                                      [u]
 
-    -T: Get Test Result                                                                            [u]
+    -T, --get-testresult: Get Test Result                                                                            [u]
 
-    -u <startup type>: Startup                                                                     [-]
+    -u, --startup <startup type>: Startup                                                                     [-]
 
-    -z <PCR index>: PCR Reset                                                                      [u]
+    -z, --pcr-reset <PCR index>: PCR Reset                                                                      [u]
 
 
     Additional information:
-
+    In this section, only short command line parameters are shown. But long ones can equally be used, e.g. "./eltt2 --hashsequence-start=sha256 41624364" can be used for "./eltt2 -a sha256 41624364".
     -a:
     With the "-a" command you can hash given data with the SHA-1/256/384 hash
     algorithm. This hash sequence sends 3 commands [start, update, complete]
