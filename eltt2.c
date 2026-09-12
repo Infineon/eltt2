@@ -1615,23 +1615,25 @@ static int pcr_allocate(uint8_t *pcr_cmd_buf, hash_algo_enum hash_algo)
 			memcpy(pcr_cmd_buf + 34, set, sizeof(set));
 			memcpy(pcr_cmd_buf + 40, clear, sizeof(clear));
 			memcpy(pcr_cmd_buf + 46, clear, sizeof(clear));
-			printf("PCR allocate SHA-1 bank\n");
+			printf("PCR allocate SHA-1 bank.\n");
 		}
 		else if (ALG_SHA256 == hash_algo)
 		{
 			memcpy(pcr_cmd_buf + 34, clear, sizeof(clear));
 			memcpy(pcr_cmd_buf + 40, set, sizeof(set));
 			memcpy(pcr_cmd_buf + 46, clear, sizeof(clear));
-			printf("PCR allocate SHA-256 bank\n");
+			printf("PCR allocate SHA-256 bank.\n");
 		}
 		else if (ALG_SHA384 == hash_algo)
 		{
 			memcpy(pcr_cmd_buf + 34, clear, sizeof(clear));
 			memcpy(pcr_cmd_buf + 40, clear, sizeof(clear));
 			memcpy(pcr_cmd_buf + 46, set, sizeof(set));
-			printf("PCR allocate SHA-384 bank\n");
+			printf("PCR allocate SHA-384 bank.\n");
 		}
 	} while (0);
+
+	printf("In order to take effect, please perform a TPM reset.\n");
 
 	return ret_val;
 }
